@@ -22,6 +22,14 @@ class Course(models.Model):
 
 
 class Class(models.Model):
-    id = models.ForeignKey(Course, on_delete=models.CASCADE, primary_key=True)
+    # id = models.ForeignKey(Course, on_delete=models.CASCADE, primary_key=True)
+    # DayTime = {“Mon”:  [“Time
+    # start”, “Time
+    # end”], “Tues”: [“Time
+    # start”, “Time
+    # end”]}
     availability = models.BooleanField(default=False)
     daytime = PickledObjectField()
+
+    def __str__(self):
+        return "Day time: {}".format(self.daytime)
