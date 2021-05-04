@@ -73,7 +73,7 @@
                     <p>Your account doesn't have access to this page. To proceed,
                     please login with an account that has access.</p>
                 {% else %}
-                    <p>Please login to see this page.</p>
+                    <p>Don't have account? <a href="{% url 'ssapp:signup' %}">Sign Up</a></p>
                 {% endif %}
             {% endif %}
             {% comment %} <form method="post" action="{% url 'login' %}">

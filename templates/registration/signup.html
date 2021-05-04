@@ -1,0 +1,158 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}
+    Sign Up 
+    {% endblock %}
+{% block style %}
+    html,
+    body {
+    height: 100%;
+    }
+
+    body {
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 40px;
+    background-color: #fff;
+    }
+
+    .form-signup {
+    width: 100%;
+    max-width: 630px;
+    padding: 15px;
+    margin: auto;
+    }
+
+    .form-signup .checkbox {
+    font-weight: 400;
+    }
+
+    .form-signup .form-floating:focus-within {
+    z-index: 2;
+    }
+
+    .form-signup input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    }
+
+    .form-signup input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    }
+{% endblock %}    
+{% block body %}
+    <div class="text-center">
+        <main class="form-signup">
+            <form method="post" action="{% url 'ssapp:signup' %}">
+                {% csrf_token %}
+                <img class="mb-4" src="{% static '/images/aiu_nb_jlogo.png' %}"  alt="" height="72">
+                <h1 class="h3 mb-3 fw-normal">Sign Up</h1>
+
+                <div class="form-floating my-1">
+                    <input type="text" name="username" class="form-control" id="floatingInput" placeholder="username">
+                    <label for="floatingInput">Username</label>
+                </div>
+                    <div class="row g-2">
+                        <div class="col form-floating">
+                            <input type="password" name="password1" class="form-control" id="floatingPassword1" >
+
+                            <label for="floatingPassword1"> Password</label>
+                        </div>
+                        <div class="col form-floating">
+                            <input type="password" name="password2" class="form-control" id="floatingPassword"> 
+                            <label for="floatingPassword2">Confirm Password</label>
+                        </div>
+                    </div>
+                    <div class="form-floating my-1">
+                        <input type="email" name="email" class="form-control" id="floatingInput">
+                        <label for="floatingInput">Email</label>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col form-floating">
+                            <input type="text" name="first_name" class="form-control" id="first_name" >
+
+                            <label for="first_name"> First Name</label>
+                        </div>
+                        <div class="col form-floating">
+                            <input type="text" name="last_name" class="form-control" id="last_name"> 
+                            <label for="last_name">Last Name</label>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col form-floating">
+                            <select id="major" name="major" class="form-select">
+                                <option selected> ...</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Accounting">Accounting</option>
+                                <option value="TESOL">TESOL</option>
+                                <option value="Management">Management</option>
+                                <option value="Teaching">Teaching</option>
+                                <option value="Christian Studies">Christian Studies</option>
+                                <option value="Bioscience">Bioscience</option>
+                                <option value="Public Health">Public Health</option>
+                                <option value="MedTech">MedTech</option>
+                                <option value="ESL">ESL</option>
+                                <option value="Nursing">Nursing</option>
+                            </select>
+
+                            <label for="major"> Major</label>
+                        </div>
+                        <div class="col form-floating">
+                            <select id="faculty" name="faculty" class="form-select">
+                                <option selected>...</option>
+                                <option value="Arts & Humanities">Arts & Humanities</option>
+                                <option value="Busienss Administration">Business Administration</option>
+                                <option value="Education">Education</option>
+                                <option value="Religious Studies">Religious Studies</option>
+                                <option value="Science">Science</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Mission Faculty of Nursing">Mission Faculty of Nursing</option>
+                            </select>
+                            <label for="faculty">Faculty</label>
+
+                        </div>
+                    </div>
+
+
+                <input type="hidden" name="next" value="{{ next }}" />
+                <button class="w-100 btn btn-lg btn-outline-primary" type="submit">Enroll</button>
+
+            </form>
+
+        </main>
+
+        {% if form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
+        {% endif %}
+        {% if next %}
+            {% if user.is_authenticated %}
+                <p>Your account doesn't have access to this page. To proceed,
+                please login with an account that has access.</p>
+            {% else %}
+                <p>Please login to see this page.</p>
+            {% endif %}
+        {% endif %}
+        {% comment %} <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td>{{ form.username.label_tag }}</td>
+                        <td>{{ form.username }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.password.label_tag }}</td>
+                        <td>{{ form.password }}</td>
+                    </tr>
+                </table>
+                <input type="submit" value="Enroll" />
+                <input type="hidden" name="next" value="{{ next }}" />
+    </form> {% endcomment %}
+
+    </div>
+{% endblock %}
