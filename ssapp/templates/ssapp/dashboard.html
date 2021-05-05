@@ -1,11 +1,7 @@
 {% extends 'ssapp/base.html' %}
 
 {% block body %}
-
-    {% for class in class_list %}
-        <li>{{class.id}} {{  class.daytime }}</li>
-    {% endfor %}
-    <main id="output"></main>
+   <main id="output"></main>
 {% endblock %}
 
 
@@ -46,7 +42,7 @@
 
           thead += `<th>Day/Time</th>`
           for (const hr of timetable.hours) {
-          thead += `<th>${hr}:00</th>`
+          thead += `<th>${hr} - ${hr}:50</th>`
           }
 
           for (let x = 0; x < timetable.days.length; x++) {
@@ -54,12 +50,12 @@
 
             for (let y = 0; y < timetable.hours.length; y++) {
 
-          tbody += `<td> ${timetable.schedule[x][y] || '-'} </td>`
+          tbody += `<td> ${timetable.schedule[x][y] || ' '} </td>`
             }
           tbody += `</tr>`
           }
          
-      return `<table class="table table-hover"><thead><tr>${thead}</tr><tbody>${tbody}</tbody></table>`
+      return `<table class="table table-bordered table-hover text-center"><thead><tr>${thead}</tr><tbody>${tbody}</tbody></table>`
           }
 
           const example = new Schedule({
@@ -69,7 +65,7 @@
           let temp = ""
           let myObj = ""
           {% for class in class_list %}
-              temp = "{{class.daytime|safe}}";
+              temp = "{{ class.daytime|safe }}";
               temp = temp.replace(/'/gi, '"')
               myObj = JSON.parse(temp);
               console.log(myObj);

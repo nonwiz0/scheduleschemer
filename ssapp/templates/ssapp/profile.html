@@ -1,5 +1,46 @@
 {% extends 'ssapp/base.html' %}
-
+{% load static %}
+{% block title %} Profile {% endblock %}
 {% block body %}
-    Hello there
+    <main>
+  <div class="container py-4">
+      <div class="p-5 mb-4 bg-light rounded-3">
+      <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Andreas Christian Mambu</h1>
+        <p class="col-md-8 fs-4">Bachelor of Science in Information Technology</p>
+            <img class="float-end" src="{% static 'images/undraw_Growing_re_olpi.svg' %}" height="80px">
+      </div>
+      </div>
+
+    <div class="row align-items-md-stretch">
+      <div class="col-md-6">
+        <div class="h-100 p-5 text-white bg-dark rounded-3">
+          <h2>Study Completion</h2>
+          <ul>
+              <li>CGPA: 3.50</li>
+              <li>Accumulated Credits: 92</li>
+              <li>Required Credits: 12</li>
+              <li>Total Required Credits: 104</li>
+          </ul>
+          <button class="btn btn-primary mt-2" type="button">Open Curriculum</button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="h-100 p-5 bg-light border rounded-3">
+          <h2>Enrolled Classes:</h2>
+          <ul class="list-group list-unstyled">
+              <li>BIOL154 Biology </li>
+              <li>BIOL224 Biostatistics</li>
+              <li>IT2468 Information Resource Management</li>
+              <li>IT499 Artificial Intelligence</li>
+              <li>IT110 Introduction to C Language</li>
+          </ul>
+          <button class="btn btn-outline-secondary mt-2" type="button">Modify Classes</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
     {% endblock %}
