@@ -40,5 +40,5 @@ class Signup(generic.CreateView):
         new_user.save()
         new_acc = Account(user=new_user, major=self.request.POST['major'], faculty=self.request.POST['faculty'], enrolled_course={})
         new_acc.save()
-        return redirect('ssapp:dashboard')
+        return redirect('ssapp:index')
 

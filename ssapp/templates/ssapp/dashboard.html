@@ -11,10 +11,10 @@
 {% block body %}
     <div class="container py-2">
         <div class="p-5 mb-4 bg-light rounded-3">
-            <div class="container-fluid py-5">
+            <div class="container-fluid py-5 mb-2">
                 <h1 class="display-5 fw-bold">Classes Schedule</h1>
-                <p class="col-md-8 fs-4 "> 2nd Semester 2020-2021 </p>
-                <img class="float-end" src="{% static 'images/undraw_Online_calendar_re_wk3t.svg' %}" height="100px">
+                <img class="float-end" src="{% static 'images/undraw_Online_calendar_re_wk3t.svg' %}" height="150px">
+                <p class="col-md-8 fs-4 mb-4 "> 2nd Semester 2020-2021 </p>
             </div>
         </div>
 
@@ -90,22 +90,24 @@
                         days: WEEK,
                         hours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
                         })
-                        let temp = ""
-                        let myObj = ""
+                        let temp = "";
+                        let myObj = "";
                         console.log("{{ class_list | safe }}")
                         {% for class in class_list %}
                             temp = "{{ class.daytime|safe }}";
-                            temp = temp.replace(/'/gi, '"')
+                            temp = temp.replace(/'/gi, '"');
                             myObj = JSON.parse(temp);
                             for (let x in myObj) {
-                            increase = myObj[x][1] - myObj[x][0]
+                                                       increase = myObj[x][1] - myObj[x][0]
                             randomColor = generate_color();
-                            start = myObj[x][0]
+                            start = myObj[x][0];
                             if (increase > 1) {
-                            min = increase % 1 * 60
-                            if (min == 0)
-                                min = "00"
+                            min = increase % 1 * 60;
+                            skip = Math.ceil(increase);
+                            if (min == 0) 
+                                min = "00";
                                 classes.addItem(x, start++, `<td colspan=${Math.ceil(increase)} class='text-white' style='background-color: ${randomColor}'> {{ class.id|safe }} ends at ${Math.floor(myObj[x][1])}:${min} </td>` )
+
                             } else {
                             classes.addItem(x, start++, `<td class="text-white" style='background-color: ${randomColor}'> {{ class.id|safe }}</td>`)
                             }
