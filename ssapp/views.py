@@ -19,7 +19,11 @@ class Dashboard(LoginRequiredMixin, generic.ListView):
 class Profile(LoginRequiredMixin, generic.TemplateView):
     login_url = '/accounts/login'
     template_name = 'ssapp/profile.html'
-       
+
+class Curriculum(LoginRequiredMixin, generic.TemplateView):
+    login_url = '/accounts/login'
+    template_name = 'ssapp/curriculum.html'
+ 
 class Login(LoginRequiredMixin, generic.TemplateView):
     login_url = '/accounts/login'
     template_name = 'ssapp/login.html'

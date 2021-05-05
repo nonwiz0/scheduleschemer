@@ -60,23 +60,22 @@
 
                     <input type="hidden" name="next" value="{{ next }}" />
                     <button class="w-100 btn btn-lg btn-outline-primary" type="submit">Sign in</button>
-
-                </form>
-
-            </main>
-
-            {% if form.errors %}
-                <p>Your username and password didn't match. Please try again.</p>
+                    <p class="my-1">Don't have account yet? <a href="{% url 'ssapp:signup' %}">Sign Up</a></p>
+      {% if form.errors %}
+                <p class="text-danger">Your username and password didn't match. Please try again.</p>
             {% endif %}
             {% if next %}
                 {% if user.is_authenticated %}
                     <p>Your account doesn't have access to this page. To proceed,
                     please login with an account that has access.</p>
-                {% else %}
-                    <p>Don't have account? <a href="{% url 'ssapp:signup' %}">Sign Up</a></p>
                 {% endif %}
             {% endif %}
-            {% comment %} <form method="post" action="{% url 'login' %}">
+       
+                </form>
+
+            </main>
+
+           {% comment %} <form method="post" action="{% url 'login' %}">
                     {% csrf_token %}
                     <table>
                         <tr>
