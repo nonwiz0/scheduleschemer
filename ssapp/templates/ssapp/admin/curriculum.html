@@ -1,0 +1,88 @@
+{% extends 'ssapp/base.html' %}
+{% load static %}
+{% block header_admin_curr %} <span class="text-muted"> Curriculum </span> {% endblock %}
+    {% block body %}
+   <div class="container py-2">
+      <div class="p-5 mb-4 bg-light rounded-3">
+      <div class="container-fluid py-5 mb-2">
+        <h1 class="display-5 fw-bold">Curriculum</h1>
+            <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
+        <p class="col-md-8 fs-4 mb-4"> Manage Curriculum </p>
+      </div>
+      </div>
+
+      </div>
+      <div class="p-5">
+          <div class="mb-5">
+          <h2 class="display-7 fw-bold">Create Curriculum</h2>
+          <form id="create_curriculum">
+              {% csrf_token %}
+              {{ form }} 
+              <input type="submit" class="mt-2 btn btn-outline-primary" value="Submit" /> 
+          </form>
+          </div>
+      <h2 class="display-7 fw-bold">List of Curriculum</h2>
+      <table class="table">
+          <thead>
+          <tr>
+              <th>Name</th>
+              <th>Total Credits</th>
+              <th>Faculty</th>
+              <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for curr in all_curr %}
+          <tr>
+              <td><a href="{% url 'ssapp:admin_detail_curriculum' curr.pk %}">{{ curr.name }} </a></td>
+              <td>{{ curr.total_credits }}</td>
+              <td>{{ curr.faculty }}</td>
+              <td>Action</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+               </table>
+                    
+      </div>
+    
+        {% endblock %}
+
+        {% block script %}
+            $('#create_curriculum').submit(function (e) {
+                e.preventDefault();
+                var serializedData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'ssapp:admin_curriculum' %}",
+                    data: serializedData,
+                    success: function (response) {
+                       console.log(response);
+                        console.log("JSON", JSON.parse(response["instance"]));
+                        let instance = JSON.parse(response["instance"]);
+                        let curr = instance[0]["fields"];
+                        name = curr["name"];
+                        pk = instance[0]["pk"] 
+                        faculty = $("select option:selected").text();
+                        let url_mask = "{% url 'ssapp:admin_detail_curriculum' 12345 %}".replace(/12345/, pk);
+                        $("tbody").append(
+                        `
+                        <tr>
+                            <td><a href=${url_mask}>${name}</a></td>
+                            <td>${curr["total_credits"]}</td>
+                            <td>${faculty}</td>
+                            <td>Action</td>
+                        </tr>
+                        `
+                        );
+                        $("#create_curriculum").trigger('reset');
+                        $("#id_name").focus();
+                        
+                        },
+                        error: function(response) {
+                            console.log(resonse["responseJSON"]["error"]);
+                        }
+
+                })
+            })
+
+        {% endblock %}

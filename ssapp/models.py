@@ -2,6 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from picklefield.fields import PickledObjectField
 # Create your models here.
+class Faculty(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    short_name = models.CharField(max_length=5)
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+
 class Account(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     major = models.CharField(
@@ -30,26 +38,53 @@ class Account(models.Model):
             ("Mission Faculty of Nursing", "MFN"),
         ], max_length=50, default="Arts & Humanities"
     )
-    enrolled_course = PickledObjectField()
+    enrolled_course = PickledObjectField(default=dict())
+    completed_course = PickledObjectField(default=dict())
 
     def __str__(self):
         return "Username: {}, Major: {}".format(self.user.username, self.major)
 
+class Program(models.Model):
+    name = models.CharField(max_length=50)
+    total_credits = models.PositiveSmallIntegerField()
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
+    """faculty = models.CharField(
+        choices=[
+            ("Arts & Humanities", "Arts & Humanities"),
+            ("Business Administration", "Business Administration"),
+            ("Education", "Education"),
+            ("Religious Studies", "Religious Studies"),
+            ("Science", "Science"),
+            ("Information Technology", "Information Technology"),
+            ("Mission Faculty of Nursing", "Mission Faculty of Nursing"),
+        ], max_length=50, default="Arts & Humanities"
+    )"""
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+ 
+class Curriculum(models.Model):
+    name = models.CharField(max_length=50, primary_key=True)
+    total_credits = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+class CourseCategory(models.Model):
+    type = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return "{}".format(self.type)
+    
 class Course(models.Model):
     id =  models.CharField(max_length=10, primary_key=True)
     name =  models.CharField(max_length=50)
-    credit = models.PositiveSmallIntegerField()
-    lecturer = models.CharField(max_length=50)
-    major = models.CharField(max_length=50)
+    credits = models.PositiveSmallIntegerField()
+    category = models.ManyToManyField(CourseCategory) 
 
 
-class Class(models.Model):
-    # id = models.ForeignKey(Course, on_delete=models.CASCADE, primary_key=True)
-    # DayTime = {“Mon”:  [“Time
-    # start”, “Time
-    # end”], “Tues”: [“Time
-    # start”, “Time
-    # end”]}
+class Class(models.Model): 
     id = models.CharField(max_length=10, primary_key=True)
     availability = models.BooleanField(default=False)
     daytime = PickledObjectField()
