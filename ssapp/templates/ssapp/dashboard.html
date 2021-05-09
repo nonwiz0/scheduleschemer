@@ -98,18 +98,18 @@
                             temp = temp.replace(/'/gi, '"');
                             myObj = JSON.parse(temp);
                             for (let x in myObj) {
-                                                       increase = myObj[x][1] - myObj[x][0]
+                            increase = myObj[x][1] - myObj[x][0]
                             randomColor = generate_color();
                             start = myObj[x][0];
                             if (increase > 1) {
-                            min = increase % 1 * 60;
+                            min = (increase % 1 * 60).toFixed();
                             skip = Math.ceil(increase);
                             if (min == 0) 
                                 min = "00";
-                                classes.addItem(x, start++, `<td colspan=${Math.ceil(increase)} class='text-white' style='background-color: ${randomColor}'> {{ class.id|safe }} ends at ${Math.floor(myObj[x][1])}:${min} </td>` )
+                                classes.addItem(x, start++, `<td colspan=${Math.ceil(increase)} class='text-white' style='background-color: ${randomColor}'> {{ class.course.id|safe }} ends at ${Math.floor(myObj[x][1])}:${min} </td>` )
 
                             } else {
-                            classes.addItem(x, start++, `<td class="text-white" style='background-color: ${randomColor}'> {{ class.id|safe }}</td>`)
+                            classes.addItem(x, start++, `<td class="text-white" style='background-color: ${randomColor}'> {{ class.course.id|safe }}</td>`)
                             }
                             }
                         {% endfor %}

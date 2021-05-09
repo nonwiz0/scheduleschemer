@@ -5,7 +5,7 @@
     <div class="container py-2">
         <div class="p-5 mb-2 bg-light rounded-3">
             <div class="container-fluid py-5 mb-2">
-                <h1 class="display-5 fw-bold">All Courses</h1>
+                <h1 class="display-5 fw-bold">Semester Courses</h1>
                 <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
                 <p class="col-md-8 fs-4 mb-4"> Manage Courses </p>
             </div>
@@ -13,14 +13,14 @@
 
     </div>
     <div class="p-5">
-        <h2 class="display-7 fw-bold"> Create Course </h2>
+        <h2 class="display-7 fw-bold"> Enroll Courses </h2>
         <form id="create_course">
             {% csrf_token %}
             {{ form }} 
             <input type="submit" value="Create" class="my-2 btn btn-outline-primary">
         </form>
-        <h2 class="display-7 fw-bold mt-5" >General Education Courses</h2>
-        <table class="table" id="ge_table">
+        <h2 class="display-7 fw-bold mt-5" >Enrolled Courses</h2>
+        <table class="table" id="en_table">
             <thead>
             <tr>
                 <th>CourseID</th>
@@ -40,29 +40,7 @@
             {% endfor %}
             </tbody>
         </table>
-        <h2 class="display-7 fw-bold mt-5">Professional Education Courses</h2>
-        <table class="table" id="pro_table">
-            <thead>
-            <tr>
-                <th>CourseID</th>
-                <th>CourseName</th>
-                <th>Credits</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for course in all_courses %}
-                {% if course.category == "Professional Courses" %}
-                    <tr>
-                        <td><a href={% url 'ssapp:admin_class' course.id %}>{{ course.id }}</a></td>
-                        <td>{{ course.name }}</td>
-                        <td>{{ course.credits }}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-            </tbody>
-        </table>
-
-
+       
     </div>
 
 {% endblock %}

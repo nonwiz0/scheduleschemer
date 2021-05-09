@@ -1,32 +1,179 @@
 {% extends 'ssapp/base.html' %}
 {% load static %}
+{% block title %} {{ course.pk }} {% endblock %}
 {% block header_admin_class %} <span class="text-muted"> Class </span> {% endblock %}
-    {% block body %}
-   <div class="container py-2">
-      <div class="p-5 mb-4 bg-light rounded-3">
-      <div class="container-fluid py-5 mb-2">
-        <h1 class="display-5 fw-bold">Classes</h1>
-            <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
-        <p class="col-md-8 fs-4 mb-4"> Manage Classes </p>
-      </div>
-      </div>
+{% block body %}
+    <div class="container py-2">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-5 mb-2">
+                <h1 class="display-5 fw-bold">{{ course.pk }}</h1>
+                <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
+                <p class="col-md-8 fs-4 mb-4"> {{ course.name }}<br /> {{ course.credits }} credits, {{ course.category }}</p>
+            </div>
+        </div>
 
-      </div>
-      <div class="p-5">
-      <h2 class="display-7 fw-bold">General Education Courses</h2>
-      <p class="fs-4">Maximum: 30 Credits</p>
-      <table class="table">
-          <tr>
-              <th>CourseID</th>
-              <th>CourseName</th>
-              <th>Credits</th>
-          </tr>
-          <tr>
-              <td>ENGL111</td>
-              <td>English Composition I</td>
-              <td>3</td>
-          </tr>
-      </table>
-      </div>
-    
-        {% endblock %}
+    </div>
+    <div class="row align-items-md-stretch">
+        <div class="col-md-6">
+            <div class="h-100 p-5 text-white bg-dark rounded-3">
+                <h2>Class Schedule</h2>
+                <ul id="schedule_list">
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="h-100 p-5 bg-light border rounded-3">
+                <h2>Sessions</h2>
+                <form id="update_schedule">
+                    {% csrf_token %}
+                    <input type="hidden" name="daytime" id="daytime" />
+                    <div class="container">
+                         <div class="row">
+                            <div class="col">
+                                <label>Day time</label>
+                                <select class="form-control" required id="day1">
+                                    <option value="Mon">Monday</option>
+                                    <option value="Tue">Tuesday</option>
+                                    <option value="Wed">Wednesday</option>
+                                    <option value="Thu">Thursday</option>
+                                    <option value="Fri">Friday</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label>Start time</label>
+                                <select class="form-control" required id="start1">
+                                     <option value="8"> 8 </option>
+                                    <option value="9"> 9 </option>
+                                    <option value="10"> 10</option>
+                                    <option value="11"> 11 </option>
+                                    <option value="12"> 12</option>
+                                    <option value="13"> 13 </option>
+                                    <option value="14"> 14 </option>
+                                    <option value="15"> 15 </option>
+                                    <option value="16"> 16</option>
+                                    <option value="17"> 17 </option>
+                               </select>
+                            </div>
+
+                            <div class="col">
+                                <label>End time</label>
+                                <select  class="form-control" required id="end1">
+                                     <option value="8"> 8:50 </option>
+                                    <option value="9"> 9:50 </option>
+                                    <option value="10"> 10:50 </option>
+                                    <option value="11"> 11:50 </option>
+                                    <option value="12"> 12:50 </option>
+                                    <option value="13"> 13:50 </option>
+                                    <option value="14"> 14:50 </option>
+                                    <option value="15"> 15:50 </option>
+                                    <option value="16"> 16:50 </option>
+                                    <option value="17"> 17:50 </option>
+                                    </select>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col">
+                                <label>Day time</label>
+                                <select class="form-control" id="day2">
+                                    <option>---</option>
+                                    <option value="Mon">Monday</option>
+                                    <option value="Tue">Tuesday</option>
+                                    <option value="Wed">Wednesday</option>
+                                    <option value="Thu">Thursday</option>
+                                    <option value="Fri">Friday</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label>Start time</label>
+                                <select class="form-control" required id="start2">
+                                    <option>---</option>
+                                     <option value="8"> 8 </option>
+                                    <option value="9"> 9 </option>
+                                    <option value="10"> 10</option>
+                                    <option value="11"> 11 </option>
+                                    <option value="12"> 12</option>
+                                    <option value="13"> 13 </option>
+                                    <option value="14"> 14 </option>
+                                    <option value="15"> 15 </option>
+                                    <option value="16"> 16</option>
+                                    <option value="17"> 17 </option>
+                               </select>
+                            </div>
+
+                            <div class="col">
+                                <label>End time</label>
+                                <select class="form-control" required id="end2">
+                                    <option>---</option>
+                                     <option value="8"> 8:50 </option>
+                                    <option value="9"> 9:50 </option>
+                                    <option value="10"> 10:50 </option>
+                                    <option value="11"> 11:50 </option>
+                                    <option value="12"> 12:50 </option>
+                                    <option value="13"> 13:50 </option>
+                                    <option value="14"> 14:50 </option>
+                                    <option value="15"> 15:50 </option>
+                                    <option value="16"> 16:50 </option>
+                                    <option value="17"> 17:50 </option>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="text-end">
+                                <input type="submit" value="Add" class="btn btn-outline-dark px-5 mt-2" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    let tmp = {{ schedule|safe }}
+    for (x in tmp) {
+    console.log(x)
+    $("#schedule_list").append(`<li> [${x}]: ${tmp[x][0]} - ${Math.ceil(Number(tmp[x][1]))}:50 </li>`);
+    }
+
+    console.log("{{ schedule|safe }}");
+    $('#update_schedule').submit(function (e) {
+    const day = ["Mon", "Tue" , "Wed", "Thu", "Fri"];
+    const hr = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+        let day1 = $("#day1 option:selected").val(),
+            start1 = Number($("#start1 option:selected").val()),
+            end1 = Number($("#end1 option:selected").val()) + (50/60),
+            day2 = $("#day2 option:selected").val(),
+            start2 = Number($("#start2 option:selected").val()),
+            end2 = Number($("#end2 option:selected").val()) + (5/6) ;
+            let daytime = {};
+            console.log("Day2", day2, start2, end2)
+            if (day.includes(day1) && hr.includes(start1) && end1 > start1 && hr.includes(Math.ceil(end1))) {
+               console.log("Session 1 is completed!");
+               daytime[day1] = [String(start1), String(end1)];
+               }
+            if (day.includes(day2) && hr.includes(start2) && end2 > start2 && hr.includes(Math.ceil(end2))) {
+               console.log("Session 2 is completed!");
+               daytime[day2] = [String(start2), String(end2)];
+               }
+            console.log(daytime);
+            $("#daytime").val(JSON.stringify({'daytime': daytime}));
+        e.preventDefault();
+        var serializedData = $(this).serialize();
+        var name = $('h1').text();
+        let url_mask = "{% url 'ssapp:admin_class' 12345 %}".replace(/12345/, name);
+                
+        $.ajax({
+            type: "POST",
+            url: url_mask,
+            data: serializedData,
+            success: function(response) {
+
+            }
+        })
+        
+    })
+
+{% endblock %}

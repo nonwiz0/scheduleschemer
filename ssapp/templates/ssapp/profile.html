@@ -8,7 +8,7 @@
   <div class="container py-2">
       <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5 mb-2">
-          <h1 class="display-5 fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</h1>
+          <h1 class="display-5 fw-bold"> {{ request.user }} {{ request.user.last_name }}</h1>
 
             <img class="float-end" src="{% static 'images/undraw_Growing_re_olpi.svg' %}" height="150px">
         <p class="col-md-6 fs-4 mb-4">Bachelor of Science in Information Technology</p>
@@ -25,20 +25,22 @@
               <li>Required Credits: 12</li>
               <li>Total Required Credits: 104</li>
           </ul>
-          <button class="btn btn-primary mt-2" type="button">Open Curriculum</button>
+          <button class="btn btn-outline-light mt-2" type="button">Open Curriculum</button>
         </div>
       </div>
       <div class="col-md-6">
         <div class="h-100 p-5 bg-light border rounded-3">
           <h2>Enrolled Classes:</h2>
           <ul class="list-group list-unstyled">
-              <li>BIOL154 Biology </li>
-              <li>BIOL224 Biostatistics</li>
-              <li>IT2468 Information Resource Management</li>
-              <li>IT499 Artificial Intelligence</li>
-              <li>IT110 Introduction to C Language</li>
-          </ul>
-          <button class="btn btn-outline-secondary mt-2" type="button">Modify Classes</button>
+              {% for class in courses %}
+                  <li>{{ class.course.id }} {{ class.course.name }}</li>
+              {% empty %}
+                  <li>
+                  You haven't enroll in any courses yet!
+                  </li>
+              {% endfor %}
+            </ul>
+          <a class="btn btn-outline-dark mt-2" href="{% url 'ssapp:course' %}">Modify Classes</a>
         </div>
       </div>
     </div>

@@ -1,26 +1,38 @@
 from django.shortcuts import render, redirect
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Class, Account, Curriculum, Course, Program
+from .models import Class, Account, Curriculum, Course, Program, ClassSchedule
 from django.contrib.auth.models import User
 from .forms import SignupForm, ProgramForm, CourseForm
 from django.http import Http404, JsonResponse
 from picklefield.fields import PickledObjectField
 from django.core import serializers
-
+import json
 # Create your views here.
 class Index(generic.ListView):
     template_name = 'ssapp/index.html'
     model = Account
 
-class Dashboard(LoginRequiredMixin, generic.ListView):
+class Dashboard(LoginRequiredMixin, generic.TemplateView):
     login_url = '/accounts/login'
     template_name = 'ssapp/dashboard.html' 
-    model = Class
+ 
+    def get(self, *args, **kwargs):
+        account = Account.objects.filter(user=self.request.user)[0]
+        courses = account.enrolled_class.all()
+        context = {"account": account, "class_list": courses}
+        return render(self.request, self.template_name, context)
 
-class Profile(LoginRequiredMixin, generic.TemplateView):
+
+class DetailProfile(LoginRequiredMixin, generic.TemplateView):
     login_url = '/accounts/login'
     template_name = 'ssapp/profile.html'
+    
+    def get(self, *args, **kwargs):
+        account = Account.objects.filter(user=self.request.user)[0]
+        courses = account.enrolled_class.all()
+        context = {"account": account, "courses": courses}
+        return render(self.request, self.template_name, context)
 
 class Curriculum(LoginRequiredMixin, generic.TemplateView):
     login_url = '/accounts/login'
@@ -39,6 +51,10 @@ class Signup(generic.CreateView):
         new_acc = Account(user=new_user, major=self.request.POST['major'], faculty=self.request.POST['faculty'], enrolled_course={})
         new_acc.save()
         return redirect('ssapp:index')
+
+class ManageCourse(LoginRequiredMixin, generic.TemplateView):
+    login_url = '/accounts/login'
+    template_name = 'ssapp/course.html'
 
 # Admin site
 class AdminProgram(LoginRequiredMixin, generic.CreateView):
@@ -74,10 +90,61 @@ class AdminCourse(LoginRequiredMixin, generic.CreateView):
     form_class = CourseForm
 
     def get(self, *args, **kwargs):
-        all_courses = Course.objects.all()
         form = self.form_class()
-        context = {"all_courses": all_courses, "form": form}
+        context = {"all_courses": Course.objects.all(), "form": form}
         return render(self.request, self.template_name, context)
+
+    def post(self, *args, **kwargs):
+        if self.request.is_ajax and self.request.method == "POST":
+            form = self.form_class(self.request.POST)
+            if form.is_valid():
+                instance = form.save()
+                ser_instance = serializers.serialize('json', [instance, ])
+                return JsonResponse({"instance": ser_instance}, status=200)
+            else:
+                return JsonResponse({"error": ""}, status=400)
+
+class AdminDetailCourse(LoginRequiredMixin, generic.DetailView):
+    login_url = '/accounts/login'
+    model = Course
+    template_name = 'ssapp/admin/class.html'
+
+    def get(self, *args, **kwargs):
+        course_id = Course.objects.filter(pk=self.kwargs['pk'])[0]
+        print(course_id) 
+        schedule = ClassSchedule.objects.filter(course=course_id)
+        new_schedule = dict()
+        if len(schedule):
+            for x in schedule:
+                for y in x.daytime: 
+                    new_schedule[y] = x.daytime[y]
+            schedule = new_schedule
+        else:
+            schedule = dict() 
+        context = {"schedule": schedule, "course": course_id}
+        return render(self.request, self.template_name, context)
+
+    def post(self, *args, **kwargs):
+        course_id = Course.objects.get(pk=self.kwargs['pk'])
+        daytime = json.loads(self.request.POST.get('daytime', ''))
+        daytime = daytime["daytime"]
+        session = dict()
+        for key, val in daytime.items():
+            if key in ["Mon", "Tue" , "Wed", "Thu", "Fri"]:
+                session[key] = [val[0], val[1]]
+        curr_class = ClassSchedule(course=course_id, availability=True, daytime=session)
+        curr_class.save()
+        curr_class = Class(id=course_id.id, availability=True, daytime=session)
+        curr_class.save()
+        print("daytime", session)
+        return JsonResponse({"instance": ""}, status=200)
+
+
+
 
 class AdminClass(generic.TemplateView):
     template_name = 'ssapp/admin/class.html'
+
+
+def UpdateSchedule(request):
+    print(request.POST)

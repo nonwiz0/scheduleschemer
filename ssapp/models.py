@@ -38,7 +38,7 @@ class Account(models.Model):
             ("Mission Faculty of Nursing", "MFN"),
         ], max_length=50, default="Arts & Humanities"
     )
-    enrolled_course = PickledObjectField(default=dict())
+    enrolled_class = models.ManyToManyField('ClassSchedule') 
     completed_course = PickledObjectField(default=dict())
 
     def __str__(self):
@@ -80,14 +80,26 @@ class CourseCategory(models.Model):
 class Course(models.Model):
     id =  models.CharField(max_length=10, primary_key=True)
     name =  models.CharField(max_length=50)
-    credits = models.PositiveSmallIntegerField()
-    category = models.ManyToManyField(CourseCategory) 
+    credits = models.PositiveSmallIntegerField(default=3)
+    category = models.CharField(
+        choices = [
+            ("General Education Courses", "General Education Courses"),
+            ("Professional Courses", "Professional Courses"),
+        ], max_length=30, default="Professional Courses"
+    ) 
 
+class ClassSchedule(models.Model): 
+    course = models.ForeignKey(Course, on_delete=models.CASCADE) 
+    availability = models.BooleanField(default=False)
+    daytime = PickledObjectField(default=dict())
+
+    def __str__(self):
+        return "name: {}, daytime: {}".format(self.course.id, self.daytime)
 
 class Class(models.Model): 
     id = models.CharField(max_length=10, primary_key=True)
     availability = models.BooleanField(default=False)
-    daytime = PickledObjectField()
+    daytime = PickledObjectField(default=dict())
 
     def __str__(self):
         return "name: {}, daytime: {}".format(self.id, self.daytime)

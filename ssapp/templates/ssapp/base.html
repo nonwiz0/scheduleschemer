@@ -26,13 +26,16 @@
     </a>
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+    {% if request.user.username != 'admin' %}
         <li><a href="{% url 'ssapp:index' %}" class="nav-link px-2 link-dark">{% block header_home %}Home {% endblock %}</a></li>
         <li><a href="{% url 'ssapp:dashboard' %}" class="nav-link px-2 link-dark">{% block header_schedule %} Schedule {% endblock %}</a></li>
         <li><a href="{% url 'ssapp:curriculum' %}" class="nav-link px-2 link-dark">{% block header_curr %} Curriculum {% endblock %}</a></li>
-        <li><a class="nav-link px-2 link-dark"> | </a></li>
+        {% else %}
+        <li><a class="nav-link px-2 link-dark" href="{% url 'ssapp:admin_curriculum' %}">{% block header_admin_student %} Students {% endblock %}</a></li>
+
         <li><a class="nav-link px-2 link-dark" href="{% url 'ssapp:admin_curriculum' %}">{% block header_admin_curr %} Curriculum {% endblock %}</a></li>
         <li><a class="nav-link px-2 link-dark" href="{% url 'ssapp:admin_course' %}">{% block header_admin_course %} Course {% endblock %}</a></li>
-        <li><a class="nav-link px-2 link-dark" href="{% url 'ssapp:admin_class' %}">{% block header_admin_class %} Class {% endblock %}</a></li>
+        {% endif %}
     </ul>
 
     <div class="col-md-3 text-end">
@@ -40,7 +43,7 @@
             <a href="{% url 'ssapp:profile' request.user %}" class="btn {% block header_style_profile %}btn-outline-primary {% endblock %}me-2 mb-1" style="width: 5.9em !important"> Profile </a>
             <a href="{% url 'logout' %}" class="btn me-2 mb-1 {% block header_style_signout %} btn-danger {% endblock %}">SIGN OUT</a>
         {% else %}
-        <a href="{% url 'login' %}" class="btn btn-primary mb-1">SIGN IN</a>
+        <a href="{% url 'login' %}" class="btn btn-primary me-2 mb-1"  style="width: 5.8em !important">SIGN IN</a>
         <a href="{% url 'ssapp:signup' %}" class="btn btn-outline-secondary me-2 mb-1 ">SIGN UP</a>
         
         {% endif %}
