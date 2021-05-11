@@ -1,4 +1,4 @@
-from .models import Class, Account, Curriculum, Course, Program
+from .models import Class, Account, Curriculum, Course
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -16,16 +16,16 @@ class SignupForm(UserCreationForm):
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
 
 
-class ProgramForm(forms.ModelForm):
+class CurriculumForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(ProgramForm, self).__init__(*args, **kwargs)
+        super(CurriculumForm, self).__init__(*args, **kwargs)
         for name in self.fields.keys():
             self.fields[name].widget.attrs.update({
                 'class': 'form-control',
             }) 
 
     class Meta:
-        model = Program
+        model = Curriculum
         fields = ('name', 'total_credits', 'faculty')
  
 class CourseForm(forms.ModelForm):
@@ -39,4 +39,17 @@ class CourseForm(forms.ModelForm):
     class Meta:
         model = Course 
         fields = ('id', 'name', 'credits', 'category')
-     
+
+class EnrollCourseForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EnrollCourseForm, self).__init__(*args, **kwargs)
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({
+                'class': 'form-control',
+            }) 
+
+    class Meta:
+        model = Account 
+        fields = ['enrolled_class',]
+
+

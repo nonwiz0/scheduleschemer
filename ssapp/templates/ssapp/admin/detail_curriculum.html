@@ -1,13 +1,13 @@
 {% extends 'ssapp/base.html' %}
 {% load static %}
-{% block header_admin_program %} <span class="text-muted"> Curriculum </span> {% endblock %}
+{% block header_admin_curriculum %} <span class="text-muted"> Curriculum </span> {% endblock %}
     {% block body %}
    <div class="container py-2">
       <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5 mb-2">
-          <h1 class="display-5 fw-bold">{{ program.name }}</h1>
+          <h1 class="display-5 fw-bold">{{ curriculum.name }}</h1>
             <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
-            <p class="col-md-8 fs-4 mb-4"> {{ program.faculty.name }}, {{program.total_credits }} credits </p>
+            <p class="col-md-8 fs-4 mb-4"> {{ curriculum.faculty.name }}, {{curriculum.total_credits }} credits </p>
       </div>
       </div>
 
@@ -15,7 +15,7 @@
       <div class="p-5">
           <div class="mb-5">
           <h2 class="display-7 fw-bold">Add Courses</h2>
-          <form id="create_programiculum">
+          <form id="create_curriculumiculum">
               {% csrf_token %}
               {{ form }} 
               <input type="submit" class="mt-2 btn btn-outline-primary" value="Submit" /> 

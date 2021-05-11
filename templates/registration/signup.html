@@ -84,47 +84,26 @@
                         </div>
                     </div>
 
-                    <div class="row g-2 mb-2">
-                        <div class="col form-floating">
-                            <select id="major" name="major" class="form-select">
-                                <option selected> ...</option>
-                                <option value="Information Technology">Information Technology</option>
-                                <option value="Accounting">Accounting</option>
-                                <option value="TESOL">TESOL</option>
-                                <option value="Management">Management</option>
-                                <option value="Teaching">Teaching</option>
-                                <option value="Christian Studies">Christian Studies</option>
-                                <option value="Bioscience">Bioscience</option>
-                                <option value="Public Health">Public Health</option>
-                                <option value="MedTech">MedTech</option>
-                                <option value="ESL">ESL</option>
-                                <option value="Nursing">Nursing</option>
-                            </select>
-
-                            <label for="major"> Major</label>
-                        </div>
-                        <div class="col form-floating">
-                            <select id="faculty" name="faculty" class="form-select">
-                                <option selected>...</option>
-                                <option value="Arts & Humanities">Arts & Humanities</option>
-                                <option value="Busienss Administration">Business Administration</option>
-                                <option value="Education">Education</option>
-                                <option value="Religious Studies">Religious Studies</option>
-                                <option value="Science">Science</option>
-                                <option value="Information Technology">Information Technology</option>
-                                <option value="Mission Faculty of Nursing">Mission Faculty of Nursing</option>
-                            </select>
-                            <label for="faculty">Faculty</label>
-
-                        </div>
+                     <div class="form-floating my-1">
+                         <select name="major" class="form-control" id="id_major" required>
+                             <option>---</option>
+                             <option>Public Health</option>
+                             <option>Information Technology</option>
+                             <option>Teaching</option>
+                             <option>Accounting</option>
+                             <option>Management</option>
+                             <option>Biology</option>
+                             <option>Nursing</option>
+                         </select>
+                        <label for="id_major">Major</label>
                     </div>
 
-
+          
                 <input type="hidden" name="next" value="{{ next }}" />
                 <button class="w-100 btn btn-lg btn-outline-primary" type="submit">Enroll</button>
                 <p class="my-1">Already have account? <a href="{% url 'login' %}">Login</a></p>
   {% if form.errors %}
-            <p class="text-danger">Please fill the information appropriately</p>
+      <p class="text-danger"> {{ form.errors }}</p>
         {% endif %}
        
             </form>

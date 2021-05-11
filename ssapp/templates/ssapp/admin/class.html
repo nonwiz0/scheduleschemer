@@ -135,7 +135,7 @@
     let tmp = {{ schedule|safe }}
     for (x in tmp) {
     console.log(x)
-    $("#schedule_list").append(`<li> [${x}]: ${tmp[x][0]} - ${Math.ceil(Number(tmp[x][1]))}:50 </li>`);
+    $("#schedule_list").append(`<li> [${x}]: ${tmp[x][0]} - ${Math.floor(Number(tmp[x][1]))}:50 </li>`);
     }
 
     console.log("{{ schedule|safe }}");

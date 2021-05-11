@@ -8,10 +8,10 @@
   <div class="container py-2">
       <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5 mb-2">
-          <h1 class="display-5 fw-bold"> {{ request.user }} {{ request.user.last_name }}</h1>
+          <h1 class="display-5 fw-bold"> {{ request.user.first_name }} {{ request.user.last_name }}</h1>
 
             <img class="float-end" src="{% static 'images/undraw_Growing_re_olpi.svg' %}" height="150px">
-        <p class="col-md-6 fs-4 mb-4">Bachelor of Science in Information Technology</p>
+            <p class="col-md-6 fs-4 mb-4">Bachelor of {{ account.major }}</p>
       </div>
       </div>
 

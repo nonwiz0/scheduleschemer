@@ -14,58 +14,51 @@
     </div>
     <div class="p-5">
         <h2 class="display-7 fw-bold"> Enroll Courses </h2>
-        <form id="create_course">
+        <form id="enroll_course">
             {% csrf_token %}
             {{ form }} 
-            <input type="submit" value="Create" class="my-2 btn btn-outline-primary">
+            <input type="submit" value="Enroll" class="my-2 btn btn-outline-primary">
         </form>
         <h2 class="display-7 fw-bold mt-5" >Enrolled Courses</h2>
         <table class="table" id="en_table">
             <thead>
             <tr>
-                <th>CourseID</th>
-                <th>CourseName</th>
+                <th>ID</th>
+                <th>Name</th>
                 <th>Credits</th>
             </tr>
             </thead>
             <tbody>
-            {% for course in all_courses %}
-                {% if course.category == "General Education Courses" %}
+            {% for class in courses %}
                     <tr>
-                        <td><a href="{% url 'ssapp:admin_class' course.id %}">{{ course.id }}</a></td>
-                        <td>{{ course.name }}</td>
-                        <td>{{ course.credits }}</td>
-                    </tr>
-                {% endif %}
+                        <td>{{ class.course.id }} </td>
+                        <td>{{ class.course.name }}</td>
+                        <td>{{ class.course.credits }}</td>
+                   </tr>
             {% endfor %}
+            <tr>
+                <td colspan="2" class="text-end">Total Credits: </td>
+                <td><b>{{ total }}</b></td>
+            </tr>
             </tbody>
         </table>
        
     </div>
-
 {% endblock %}
 {% block script %}
-    $('#create_course').submit(function (e) {
+    $('#enroll_course').submit(function (e) {
     e.preventDefault();
     var serializedData = $(this).serialize();
     $.ajax({
     type: 'POST',
-    url: "{% url 'ssapp:admin_course' %}",
+    url: "{% url 'ssapp:course' %}",
     data: serializedData,
     success: function (response) {
     console.log(response);
     console.log("JSON", JSON.parse(response["instance"]));
     let instance = JSON.parse(response["instance"]);
     let curr = instance[0]["fields"];
-    console.log(curr); 
-    let temp = curr["category"];
-    if (temp == "Professional Courses") {
-        temp = "#pro_table";
-        } else {
-        temp = "#ge_table";
-        }
-    console.log(temp);
-    $(`${temp} tbody`).append(
+    $(`table tbody`).append(
     `
     <tr>
         <td>${instance[0]["pk"]}</td>
@@ -74,12 +67,10 @@
     </tr>
     `
     );
-    $("#create_course").trigger('reset');
-    $("#id_id").focus();
 
     },
     error: function(response) {
-    console.log(response["responseJSON"]["error"]);
+    console.log(response)
     }
 
     })
