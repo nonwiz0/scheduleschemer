@@ -28,6 +28,19 @@ class CurriculumForm(forms.ModelForm):
         model = Curriculum
         fields = ('name', 'total_credits', 'faculty')
  
+
+class UpdateCurriculumForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(UpdateCurriculumForm, self).__init__(*args, **kwargs)
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({
+                'class': 'form-control',
+            }) 
+
+    class Meta:
+        model = Curriculum
+        fields = ['courses', ]
+ 
 class CourseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CourseForm, self).__init__(*args, **kwargs)

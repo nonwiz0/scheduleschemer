@@ -16,6 +16,7 @@ urlpatterns = [
     path('admin/course/update', views.UpdateSchedule, name="update_schedule"),
     path("admin/curriculum", views.AdminCurriculum.as_view(), name="admin_curriculum"),
     path("admin/<int:pk>/curriculum", views.AdminDetailCurriculum.as_view(), name="admin_detail_curriculum"),
+    path("admin/<int:curr_id>/curriculum/<str:course_id>/drop", views.drop_course_from_curriculum, name='drop_course_from_curriculum'),
 
 
 ]

@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Class, Account, Curriculum, Course, ClassSchedule
+from .models import * 
 from django.contrib.auth.models import User
-from .forms import SignupForm, CurriculumForm, CourseForm, EnrollCourseForm
+from .forms import * 
 from django.http import Http404, JsonResponse
 from picklefield.fields import PickledObjectField
 from django.core import serializers
@@ -76,12 +76,10 @@ class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
     def post(self, *args, **kwargs):
         if self.request.is_ajax and self.request.method == "POST":
             form = self.form_class(self.request.POST)
-            if form.is_valid():
-                instance = form.save()
-                ser_instance = serializers.serialize('json', [instance, ])
-                return JsonResponse({"instance": ser_instance}, status=200)
-            else:
-                return JsonResponse({"error": ""}, status=400)
+            print(form)
+            instance = form
+            ser_instance = serializers.serialize('json', [instance, ])
+            return JsonResponse({"instance": ser_instance}, status=200)
 
 
 # Admin site
@@ -106,10 +104,46 @@ class AdminCurriculum(LoginRequiredMixin, generic.CreateView):
             else:
                 return JsonResponse({"error": ""}, status=400)
 
-class AdminDetailCurriculum(LoginRequiredMixin, generic.DetailView):
+class AdminDetailCurriculum(LoginRequiredMixin, generic.UpdateView):
     login_url = '/accounts/login'
-    model = Curriculum
     template_name = 'ssapp/admin/detail_curriculum.html'
+    form_class = UpdateCurriculumForm
+
+    def get(self, *args, **kwargs):
+        curr_curriculum = Curriculum.objects.filter(pk=self.kwargs['pk'])[0]
+        courses = curr_curriculum.courses.all()
+        ge_courses = curr_curriculum.courses.filter(category = 'General Education Courses')
+        pro_courses = curr_curriculum.courses.exclude(category = 'General Education Courses')
+        not_added_courses = Course.objects.all().difference(courses) 
+        form = self.form_class()
+        context = {"curriculum": curr_curriculum, 'ge_courses': ge_courses, 'pro_courses': pro_courses, 'difference_courses': not_added_courses, "form": form}
+        return render(self.request, self.template_name, context)
+    
+    def post(self, *args, **kwargs):
+        if self.request.is_ajax and self.request.method == "POST":
+            form = self.form_class(self.request.POST)
+            curr = Curriculum.objects.filter(pk=self.kwargs['pk'])[0]
+            courses = self.request.POST['courses']
+            if courses.find(',') > 1:
+                courses_list = courses.split(',')
+                for course in courses_list:
+                    curr.courses.add(Course.objects.get(pk=course))
+                print("courses_list", courses_list)
+            else:
+                print("just one:", courses)
+                curr.courses.add(Course.objects.get(pk=courses))
+            curr.save()
+            ser_instance = serializers.serialize('json', [])
+            return JsonResponse({"instance": ser_instance}, status=200)
+
+def drop_course_from_curriculum(request, curr_id, course_id):
+    if Course.objects.filter(pk=course_id).exists() and Curriculum.objects.filter(pk=curr_id).exists():
+        course = Course.objects.get(pk=course_id)
+        curr = Curriculum.objects.get(pk=curr_id)
+        curr.courses.remove(course)
+        curr.save()
+        return redirect('ssapp:admin_detail_curriculum', pk=curr_id)
+
 
 
 class AdminCourse(LoginRequiredMixin, generic.CreateView):

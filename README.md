@@ -24,6 +24,7 @@
 - Working on Class n Account
 - Worked on dashboard modifying the colspan
 - Work on models, rearranging the relationship between each model
+- Working on Curriculum and Courses >> Add / Drop Courses from Curriculum
 
 # Requirements:
 - django-picklefield : Can be install by >> pip install django-picklefield

@@ -1,7 +1,11 @@
 {% extends 'ssapp/base.html' %}
 {% load static %}
+{% block html_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    {% endblock %}
 {% block header_admin_curriculum %} <span class="text-muted"> Curriculum </span> {% endblock %}
     {% block body %}
+    
    <div class="container py-2">
       <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5 mb-2">
@@ -15,10 +19,17 @@
       <div class="p-5">
           <div class="mb-5">
           <h2 class="display-7 fw-bold">Add Courses</h2>
-          <form id="create_curriculumiculum">
+          <form id="add_course">
               {% csrf_token %}
-              {{ form }} 
-              <input type="submit" class="mt-2 btn btn-outline-primary" value="Submit" /> 
+              <select class="form-control" multiple id="id_courses" name="courses">
+                  {% for option in difference_courses %}
+                      <option>{{ option }}</option>
+                      {% empty %}
+                          <option>Empty</option>
+                    {% endfor %}
+
+              </select>
+             <input type="submit" class="mt-2 btn btn-outline-primary" value="Add Course" /> 
           </form>
           </div>
       <h2 class="display-7 fw-bold my-2">General Education Courses</h2>
@@ -33,6 +44,16 @@
           </tr>
           </thead>
           <tbody>
+              {% if ge_courses %}
+                  {% for course in ge_courses %}
+                  <tr>
+                      <td>{{ course.id }}</td>
+                      <td>{{ course.name|truncatechars:20 }}</td>
+                      <td>{{ course.credits }}</td>
+                      <td class="text-center"> <a href="{% url 'ssapp:drop_course_from_curriculum' curriculum.id course.id %}" class="text-danger"><i class="bi bi-trash"></i></a> </td>
+                </tr> 
+                {% endfor %}
+            {% endif %}
          </tbody>
                </table>
                <h2 class="display-7 fw-bold mt-4">Professional Courses</h2>
@@ -47,10 +68,47 @@
           </tr>
           </thead>
           <tbody>
-         </tbody>
+          {% if pro_courses %}
+                  {% for course in pro_courses %}
+                  <tr>
+                      <td>{{ course.id }}</td>
+                      <td>{{ course.name }}</td>
+                      <td>{{ course.credits }}</td>
+                      <td class="text-center"> <a href="{% url 'ssapp:drop_course_from_curriculum' curriculum.id course.id %}" class="text-danger"><i class="bi bi-trash"></i></a> </td>
+                </tr> 
+                {% endfor %}
+            {% endif %}
+          </tbody>
                </table>
                     
       </div>
     
         {% endblock %}
+        {% block script %}
+   $('#add_course').submit(function (e) {
+   let select = $("select").val()
+   $("form").append(`<input type="hidden" name="courses" value=${select} />`)
+    e.preventDefault();
+    let url_mask = "{% url 'ssapp:admin_detail_curriculum' 12345 %}".replace(/12345/, {{ curriculum.id|safe }}); 
+    var serializedData = $(this).serialize();
+    $.ajax({
+    type: 'POST',
+    url: url_mask,
+    data: serializedData,
+    success: function (response) {
+    $("#add_course").trigger('reset');
+    $("#id_courses").focus();
 
+    },
+    error: function(response) {
+    }
+
+    })
+    })
+
+
+
+
+
+
+        {% endblock %}

@@ -10,19 +10,26 @@ class Faculty(models.Model):
         return "{}".format(self.name)
 
 class Curriculum(models.Model):
-    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, unique=True)
     total_credits = models.PositiveSmallIntegerField()
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)
-    coures = models.ManyToManyField('Course', blank=True)
+    courses = models.ManyToManyField('Course', blank=True, related_name="curriculum")
 
     def __str__(self):
         return "{}".format(self.name)
 
+    def save(self, *args, **kwargs):
+        credits = 0
+        for course in self.courses.all():
+            credits += course.credits
+        self.total_credits = credits
+        super().save(*args, **kwargs)
+            
+
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user')
-    major = models.ForeignKey(Curriculum, on_delete=models.CASCADE, related_name='major')
-    enrolled_class = models.ManyToManyField('ClassSchedule', blank=True) 
+    major = models.ForeignKey(Curriculum, on_delete=models.CASCADE, related_name='major', null=False)
+    enrolled_class = models.ManyToManyField('ClassSchedule', blank=True, related_name="enrolled_class") 
     completed_course = PickledObjectField(default=dict())
 
     def __str__(self):
@@ -44,6 +51,9 @@ class Course(models.Model):
             ("Professional Courses", "Professional Courses"),
         ], max_length=30, default="Professional Courses"
     ) 
+
+    def __str__(self):
+        return f"{self.id} {self.name} ({self.credits})"
 
 class ClassSchedule(models.Model): 
     course = models.OneToOneField(Course, primary_key=True, on_delete=models.CASCADE) 
