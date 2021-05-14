@@ -37,6 +37,14 @@ class DetailProfile(LoginRequiredMixin, generic.TemplateView):
 class UserCurriculum(LoginRequiredMixin, generic.TemplateView):
     login_url = '/accounts/login'
     template_name = 'ssapp/curriculum.html'
+    
+    def get(self, *args, **kwargs):
+        account = Account.objects.filter(user=self.request.user)[0]
+        context = {"account": account}
+        return render(self.request, self.template_name, context)
+
+
+
 
 class Signup(generic.CreateView):
     model = Account
@@ -53,11 +61,6 @@ class Signup(generic.CreateView):
         new_acc.save()
         return redirect('ssapp:dashboard')
 
-class ManageCourse(LoginRequiredMixin, generic.TemplateView):
-    login_url = '/accounts/login'
-    template_name = 'ssapp/course.html'
-
-
 class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
     login_url = '/accounts/login'
     form_class = EnrollCourseForm
@@ -66,20 +69,37 @@ class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
     def get(self, *args, **kwargs):
         form = self.form_class()
         account = Account.objects.get(user=self.request.user)
+        not_enroll_courses = account.major.courses.all()
+        completed_courses = account.completed_course.all()
+        not_enroll_courses = not_enroll_courses.difference(completed_courses)
         courses = account.enrolled_class.all()
         total = 0
         for one_class in courses:
             total += one_class.course.credits
-        context = {"form": form, 'courses': courses, 'total': total}
+        context = {"available_courses": not_enroll_courses, 'courses': courses, 'total': total}
         return render(self.request, self.template_name, context)
 
     def post(self, *args, **kwargs):
         if self.request.is_ajax and self.request.method == "POST":
-            form = self.form_class(self.request.POST)
-            print(form)
-            instance = form
-            ser_instance = serializers.serialize('json', [instance, ])
-            return JsonResponse({"instance": ser_instance}, status=200)
+            curr_acc = Account.objects.get(user=self.request.user)
+            type = self.request.POST.get('type', 0)
+            if type and type == 'unenroll' and self.request.POST.get('course_id', 0):
+                course = Course.objects.get(pk=self.request.POST['course_id'])
+                curr_acc.enrolled_class.remove(course.class_schedule)
+                curr_acc.completed_course.remove(course)
+                curr_acc.save()
+            if type and type == 'enroll':
+                courses = self.request.POST['courses']
+                if courses.find(',') > 1:
+                    courses_list = courses.split(',')
+                    for course in courses_list:
+                        curr_acc.enrolled_class.add(Course.objects.get(pk=course).class_schedule)
+                        curr_acc.completed_course.add(Course.objects.get(pk=course))
+                else:
+                    curr_acc.enrolled_class.add(Course.objects.get(pk=courses).class_schedule)
+                    curr_acc.completed_course.add(Course.objects.get(pk=courses))
+                curr_acc.save()
+            return JsonResponse({"instance": ""}, status=200)
 
 
 # Admin site
@@ -145,7 +165,6 @@ def drop_course_from_curriculum(request, curr_id, course_id):
         return redirect('ssapp:admin_detail_curriculum', pk=curr_id)
 
 
-
 class AdminCourse(LoginRequiredMixin, generic.CreateView):
     template_name = 'ssapp/admin/course.html'
     login_url = '/accounts/login'
@@ -160,7 +179,10 @@ class AdminCourse(LoginRequiredMixin, generic.CreateView):
         if self.request.is_ajax and self.request.method == "POST":
             form = self.form_class(self.request.POST)
             if form.is_valid():
+                id = self.request.POST['id']
                 instance = form.save()
+                cs = ClassSchedule.objects.create(course=Course.objects.get(pk=id), daytime=dict())
+                cs.save()
                 ser_instance = serializers.serialize('json', [instance, ])
                 return JsonResponse({"instance": ser_instance}, status=200)
             else:
@@ -209,11 +231,3 @@ class AdminDetailCourse(LoginRequiredMixin, generic.DetailView):
         return JsonResponse({"instance": ""}, status=200)
 
 
-
-
-class AdminClass(generic.TemplateView):
-    template_name = 'ssapp/admin/class.html'
-
-
-def UpdateSchedule(request):
-    print(request.POST)

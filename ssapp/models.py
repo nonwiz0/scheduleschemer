@@ -30,7 +30,7 @@ class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user')
     major = models.ForeignKey(Curriculum, on_delete=models.CASCADE, related_name='major', null=False)
     enrolled_class = models.ManyToManyField('ClassSchedule', blank=True, related_name="enrolled_class") 
-    completed_course = PickledObjectField(default=dict())
+    completed_course = models.ManyToManyField('Course', blank=True, related_name="completed_courses") 
 
     def __str__(self):
         return "Username: {}".format(self.user.username)
@@ -51,12 +51,13 @@ class Course(models.Model):
             ("Professional Courses", "Professional Courses"),
         ], max_length=30, default="Professional Courses"
     ) 
-
+     
     def __str__(self):
         return f"{self.id} {self.name} ({self.credits})"
 
+
 class ClassSchedule(models.Model): 
-    course = models.OneToOneField(Course, primary_key=True, on_delete=models.CASCADE) 
+    course = models.OneToOneField(Course, primary_key=True, on_delete=models.CASCADE, related_name='class_schedule') 
     availability = models.BooleanField(default=False)
     daytime = PickledObjectField(default=dict())
 

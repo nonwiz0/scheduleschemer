@@ -5,9 +5,9 @@
    <div class="container py-2">
       <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5 mb-2">
-        <h1 class="display-5 fw-bold">Curriculum</h1>
+          <h1 class="display-5 fw-bold">{{ account.major }}</h1>
             <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
-        <p class="col-md-8 fs-4 mb-4"> Bachelor of Information Technology </p>
+            <p class="col-md-8 fs-4 mb-4"> Curriculum </p>
       </div>
       </div>
 
@@ -19,13 +19,15 @@
           <tr>
               <th>CourseID</th>
               <th>CourseName</th>
-              <th>Credits</th>
+              <th class="text-center">Credits</th>
           </tr>
+          {% for course in account.major.courses.all %}
           <tr>
-              <td>ENGL111</td>
-              <td>English Composition I</td>
-              <td>3</td>
+              <td>{{ course.id }} {{ course.category }}</td>
+              <td>{{ course.name }}</td>
+              <td class="text-center">{{ course.credits }}</td>
           </tr>
+          {% endfor %}
       </table>
       </div>
     
