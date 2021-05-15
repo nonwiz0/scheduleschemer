@@ -15,6 +15,7 @@ urlpatterns = [
     path('admin/<str:pk>/course', views.AdminDetailCourse.as_view(), name="admin_class"),
     path("admin/curriculum", views.AdminCurriculum.as_view(), name="admin_curriculum"),
     path("admin/<int:pk>/curriculum", views.AdminDetailCurriculum.as_view(), name="admin_detail_curriculum"),
+    path("admin/<int:curr_id>/curriculum/generate_ge_courses", views.auto_add_ge_courses, name='add_ge_courses'),
     path("admin/<int:curr_id>/curriculum/<str:course_id>/drop", views.drop_course_from_curriculum, name='drop_course_from_curriculum'),
 
 

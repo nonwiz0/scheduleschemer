@@ -8,7 +8,7 @@
             <div class="container-fluid py-5 mb-2">
                 <h1 class="display-5 fw-bold">{{ course.pk }}</h1>
                 <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
-                <p class="col-md-8 fs-4 mb-4"> {{ course.name }}<br /> {{ course.credits }} credits, {{ course.category }}</p>
+                <p class="col-md-8 fs-4 mb-4"> {{ course.name }}<br />{{ course.category }}, {{ course.credits }} credits</p>
             </div>
         </div>
 
@@ -17,8 +17,27 @@
         <div class="col-md-6">
             <div class="h-100 p-5 text-white bg-dark rounded-3">
                 <h2>Class Schedule</h2>
+                <p>Cannot set two sessions the same day at once</p>
                 <ul id="schedule_list">
                 </ul>
+                <hr />
+                <h3>Reset</h3>
+                <form id="reset_day">
+                    <input type="hidden" value="{{ csrf_token }}" id="csrf" />
+                    <div class="row">
+                        <div class="col">
+                    <select class="form-control" required id="select_day">
+                        <option value="Mon">Monday</option>
+                        <option value="Tue">Tuesday</option>
+                        <option value="Wed">Wednesday</option>
+                        <option value="Thu">Thursday</option>
+                        <option value="Fri">Friday</option>
+                    </select>
+                        </div>
+                        <div class="col">
+                            <input type="submit" value="Reset" class="btn btn-outline-light"></div>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="col-md-6">
@@ -26,9 +45,10 @@
                 <h2>Sessions</h2>
                 <form id="update_schedule">
                     {% csrf_token %}
+                    <input type="hidden" name="action" value="update_schedule" />
                     <input type="hidden" name="daytime" id="daytime" />
                     <div class="container">
-                         <div class="row">
+                        <div class="row">
                             <div class="col">
                                 <label>Day time</label>
                                 <select class="form-control" required id="day1">
@@ -40,9 +60,9 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <label>Start time</label>
+                                <label>Start</label>
                                 <select class="form-control" required id="start1">
-                                     <option value="8"> 8 </option>
+                                    <option value="8"> 8 </option>
                                     <option value="9"> 9 </option>
                                     <option value="10"> 10</option>
                                     <option value="11"> 11 </option>
@@ -52,23 +72,29 @@
                                     <option value="15"> 15 </option>
                                     <option value="16"> 16</option>
                                     <option value="17"> 17 </option>
-                               </select>
+                                </select>
                             </div>
+                        </div>
+                        <div class="row">
 
                             <div class="col">
-                                <label>End time</label>
+                                <label>End</label>
                                 <select  class="form-control" required id="end1">
-                                     <option value="8"> 8:50 </option>
-                                    <option value="9"> 9:50 </option>
-                                    <option value="10"> 10:50 </option>
-                                    <option value="11"> 11:50 </option>
-                                    <option value="12"> 12:50 </option>
-                                    <option value="13"> 13:50 </option>
-                                    <option value="14"> 14:50 </option>
-                                    <option value="15"> 15:50 </option>
-                                    <option value="16"> 16:50 </option>
-                                    <option value="17"> 17:50 </option>
-                                    </select>
+                                    <option value="8"> 8 </option>
+                                    <option value="9"> 9 </option>
+                                    <option value="10"> 10 </option>
+                                    <option value="11"> 11 </option>
+                                    <option value="12"> 12 </option>
+                                    <option value="13"> 13 </option>
+                                    <option value="14"> 14 </option>
+                                    <option value="15"> 15 </option>
+                                    <option value="16"> 16 </option>
+                                    <option value="17"> 17 </option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label>Minutes</label>
+                                <input type="number" min="0" max="50" value="50" id="end_mins" class="form-control" required/>
                             </div>
                         </div>
                         <hr />
@@ -88,7 +114,7 @@
                                 <label>Start time</label>
                                 <select class="form-control" required id="start2">
                                     <option>---</option>
-                                     <option value="8"> 8 </option>
+                                    <option value="8"> 8 </option>
                                     <option value="9"> 9 </option>
                                     <option value="10"> 10</option>
                                     <option value="11"> 11 </option>
@@ -98,14 +124,14 @@
                                     <option value="15"> 15 </option>
                                     <option value="16"> 16</option>
                                     <option value="17"> 17 </option>
-                               </select>
+                                </select>
                             </div>
 
                             <div class="col">
                                 <label>End time</label>
                                 <select class="form-control" required id="end2">
                                     <option>---</option>
-                                     <option value="8"> 8:50 </option>
+                                    <option value="8"> 8:50 </option>
                                     <option value="9"> 9:50 </option>
                                     <option value="10"> 10:50 </option>
                                     <option value="11"> 11:50 </option>
@@ -115,7 +141,7 @@
                                     <option value="15"> 15:50 </option>
                                     <option value="16"> 16:50 </option>
                                     <option value="17"> 17:50 </option>
-                                    </select>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
@@ -133,47 +159,72 @@
 {% endblock %}
 {% block script %}
     let tmp = {{ schedule|safe }}
-    for (x in tmp) {
-    console.log(x)
-    $("#schedule_list").append(`<li> [${x}]: ${tmp[x][0]} - ${Math.floor(Number(tmp[x][1]))}:50 </li>`);
+    for (let x in tmp) {
+    if (tmp[x].length == 2) 
+    $("#schedule_list").append(`<li>[${x}]: ${tmp[x][0]} - ${Math.floor(tmp[x][1])}:${Math.ceil(tmp[x][1] % 1 * 60)} </li>`);
+    else 
+   $("#schedule_list").append(`<li>[${x}]: ${tmp[x][0]} - ${Math.floor(tmp[x][1])}:${Math.ceil(tmp[x][1] % 1 * 60)}, ${tmp[x][2]} - ${Math.floor(tmp[x][1])}:${Math.ceil(tmp[x][3] % 1 * 60)} </li>`);
+      
     }
 
     console.log("{{ schedule|safe }}");
-    $('#update_schedule').submit(function (e) {
-    const day = ["Mon", "Tue" , "Wed", "Thu", "Fri"];
-    const hr = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
-        let day1 = $("#day1 option:selected").val(),
-            start1 = Number($("#start1 option:selected").val()),
-            end1 = Number($("#end1 option:selected").val()) + (50/60),
-            day2 = $("#day2 option:selected").val(),
-            start2 = Number($("#start2 option:selected").val()),
-            end2 = Number($("#end2 option:selected").val()) + (5/6) ;
-            let daytime = {};
-            console.log("Day2", day2, start2, end2)
-            if (day.includes(day1) && hr.includes(start1) && end1 > start1 && hr.includes(Math.ceil(end1))) {
-               console.log("Session 1 is completed!");
-               daytime[day1] = [String(start1), String(end1)];
-               }
-            if (day.includes(day2) && hr.includes(start2) && end2 > start2 && hr.includes(Math.ceil(end2))) {
-               console.log("Session 2 is completed!");
-               daytime[day2] = [String(start2), String(end2)];
-               }
-            console.log(daytime);
-            $("#daytime").val(JSON.stringify({'daytime': daytime}));
-        e.preventDefault();
-        var serializedData = $(this).serialize();
-        var name = $('h1').text();
+
+    $("#reset_day").submit(function (e) {
+        let day = $("#select_day").val();
+        let csrf = $("#csrf").val();
+        let data = {
+            'action': 'reset_day',
+            'day': day,
+            'csrfmiddlewaretoken': csrf
+        }
+        let name = $('h1').text();
         let url_mask = "{% url 'ssapp:admin_class' 12345 %}".replace(/12345/, name);
-                
+
         $.ajax({
             type: "POST",
             url: url_mask,
-            data: serializedData,
+            data: data,
             success: function(response) {
-
+            location.reload();
             }
         })
-        
+     })
+
+    $('#update_schedule').submit(function (e) {
+    const day = ["Mon", "Tue" , "Wed", "Thu", "Fri"];
+    const hr = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+    let day1 = $("#day1 option:selected").val(),
+    start1 = Number($("#start1 option:selected").val()),
+    end1 = Number($("#end1 option:selected").val()) + Number((Number($("#end_mins").val())/60).toFixed(2)),
+    day2 = $("#day2 option:selected").val(),
+    start2 = Number($("#start2 option:selected").val()),
+    end2 = Number($("#end2 option:selected").val()) + Number((5/6).toFixed(2)) ;
+    let daytime = {};
+    console.log(day1, start1, end1)
+    if (day.includes(day1) && hr.includes(start1) && end1 > start1 && hr.includes(Math.ceil(end1))) {
+    console.log("Session 1 is completed!");
+    daytime[day1] = [String(start1), String(end1)];
+    }
+    if (day.includes(day2) && hr.includes(start2) && end2 > start2 && hr.includes(Math.ceil(end2))) {
+    console.log("Session 2 is completed!");
+    daytime[day2] = [String(start2), String(end2)];
+    }
+    console.log(daytime);
+    $("#daytime").val(JSON.stringify({'daytime': daytime}));
+    e.preventDefault();
+    var serializedData = $(this).serialize();
+    var name = $('h1').text();
+    let url_mask = "{% url 'ssapp:admin_class' 12345 %}".replace(/12345/, name);
+
+    $.ajax({
+    type: "POST",
+    url: url_mask,
+    data: serializedData,
+    success: function(response) {
+        location.reload();
+    }
+    })
+
     })
 
 {% endblock %}

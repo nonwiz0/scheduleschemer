@@ -40,7 +40,9 @@ class UserCurriculum(LoginRequiredMixin, generic.TemplateView):
     
     def get(self, *args, **kwargs):
         account = Account.objects.filter(user=self.request.user)[0]
-        context = {"account": account}
+        ge_courses = account.major.courses.filter(category = 'General Education Courses')
+        pro_courses = account.major.courses.exclude(category = 'General Education Courses')
+        context = {"account": account, 'ge_courses': ge_courses, 'pro_courses': pro_courses}
         return render(self.request, self.template_name, context)
 
 
@@ -116,13 +118,21 @@ class AdminCurriculum(LoginRequiredMixin, generic.CreateView):
 
     def post(self, *args, **kwargs):
         if self.request.is_ajax and self.request.method == "POST":
-            form = self.form_class(self.request.POST)
-            if form.is_valid():
-                instance = form.save()
-                ser_instance = serializers.serialize('json', [instance, ])
-                return JsonResponse({"instance": ser_instance}, status=200)
-            else:
-                return JsonResponse({"error": ""}, status=400)
+            action = self.request.POST['type']
+            if action == 'add':
+                form = self.form_class(self.request.POST)
+                if form.is_valid():
+                    instance = form.save()
+                    ser_instance = serializers.serialize('json', [instance, ])
+                    return JsonResponse({"instance": ser_instance}, status=200)
+                else:
+                    return JsonResponse({"error": ""}, status=400)
+            if action == 'delete':
+                course_pk = self.request.POST['curr_pk']
+                if Curriculum.objects.filter(pk=course_pk).exists():
+                    curr = Curriculum.objects.get(pk=course_pk)
+                    curr.delete()
+                return JsonResponse({"instance": ""}, status=200)
 
 class AdminDetailCurriculum(LoginRequiredMixin, generic.UpdateView):
     login_url = '/accounts/login'
@@ -134,7 +144,7 @@ class AdminDetailCurriculum(LoginRequiredMixin, generic.UpdateView):
         courses = curr_curriculum.courses.all()
         ge_courses = curr_curriculum.courses.filter(category = 'General Education Courses')
         pro_courses = curr_curriculum.courses.exclude(category = 'General Education Courses')
-        not_added_courses = Course.objects.all().difference(courses) 
+        not_added_courses = Course.objects.filter(faculty=curr_curriculum.faculty).difference(courses)
         form = self.form_class()
         context = {"curriculum": curr_curriculum, 'ge_courses': ge_courses, 'pro_courses': pro_courses, 'difference_courses': not_added_courses, "form": form}
         return render(self.request, self.template_name, context)
@@ -155,6 +165,15 @@ class AdminDetailCurriculum(LoginRequiredMixin, generic.UpdateView):
             curr.save()
             ser_instance = serializers.serialize('json', [])
             return JsonResponse({"instance": ser_instance}, status=200)
+
+def auto_add_ge_courses(request, curr_id):
+    if Curriculum.objects.filter(pk=curr_id).exists():
+        curr = Curriculum.objects.get(pk=curr_id)
+        ge_courses = Course.objects.filter(category='General Education Courses')
+        for course in ge_courses:
+            curr.courses.add(course)
+        curr.save()
+        return redirect('ssapp:admin_detail_curriculum', pk=curr_id)
 
 def drop_course_from_curriculum(request, curr_id, course_id):
     if Course.objects.filter(pk=course_id).exists() and Curriculum.objects.filter(pk=curr_id).exists():
@@ -210,24 +229,29 @@ class AdminDetailCourse(LoginRequiredMixin, generic.DetailView):
 
     def post(self, *args, **kwargs):
         course_id = Course.objects.get(pk=self.kwargs['pk'])
-        daytime = json.loads(self.request.POST.get('daytime', ''))
-        daytime = daytime["daytime"]
-        session = dict()
-        for key, val in daytime.items():
-            if key in ["Mon", "Tue" , "Wed", "Thu", "Fri"]:
-                session[key] = [val[0], val[1]]
-        if ClassSchedule.objects.filter(course=course_id).exists():
-            print(True)
-            prev_class = ClassSchedule.objects.get(course=course_id)
-            for day in daytime:
-                prev_class.daytime[day] = session[day]
-            prev_class.save()
+        action = self.request.POST.get('action', '')
+        if action != "reset_day":
+            daytime = json.loads(self.request.POST.get('daytime', ''))
+            daytime = daytime["daytime"]
+            session = dict()
+            for key, val in daytime.items():
+                if key in ["Mon", "Tue" , "Wed", "Thu", "Fri"]:
+                    session[key] = [val[0], val[1]]
+            if ClassSchedule.objects.filter(course=course_id).exists():
+                print(True)
+                prev_class = ClassSchedule.objects.get(course=course_id)
+                for day in daytime:
+                    if key in prev_class.daytime:
+                        prev_class.daytime[day].append(session[day][0])
+                        prev_class.daytime[day].append(session[day][1])
+                    else:
+                        prev_class.daytime[day] = session[day]
+                prev_class.save()
         else:
-            curr_class = ClassSchedule(course=course_id, availability=True, daytime=session)
+            day = self.request.POST.get('day', '')
+            curr_class = course_id.class_schedule
+            curr_class.daytime.pop(day)
             curr_class.save()
-            curr_class = Class(id=course_id.id, availability=True, daytime=session)
-            curr_class.save()
-            print("daytime", session)
         return JsonResponse({"instance": ""}, status=200)
 
 

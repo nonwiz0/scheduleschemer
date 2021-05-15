@@ -51,7 +51,7 @@ class CourseForm(forms.ModelForm):
 
     class Meta:
         model = Course 
-        fields = ('id', 'name', 'credits', 'category')
+        fields = ('id', 'name', 'credits', 'category', 'faculty')
 
 class EnrollCourseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

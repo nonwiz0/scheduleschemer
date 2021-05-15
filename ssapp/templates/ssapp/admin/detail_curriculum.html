@@ -35,17 +35,20 @@
         <h2 class="display-7 fw-bold my-2">General Education Courses</h2>
         <p class="fs-4">Maximum: 30 Credits</p>
         <div class="table-responsive">
-            <table class="table table-hover" id="ge_courses">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th class="text-center">Credits</th>
-                        <th class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if ge_courses %}
+            <button id="hide" class="btn btn-outline-secondary">Hide GE Courses?</button>
+            <button id="show" class="btn btn-outline-secondary">Show GE Courses?</button>
+ 
+            {% if ge_courses %}
+                <table class="table table-hover" id="ge_courses">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th class="text-center">Credits</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {% for course in ge_courses %}
                             <tr>
                                 <td><a href="{% url 'ssapp:admin_class' course.id %}" class="">{{ course.id }}</a></td>
@@ -54,12 +57,16 @@
                                 <td class="text-center"> <a href="{% url 'ssapp:drop_course_from_curriculum' curriculum.id course.id %}" class="text-danger"><i class="bi bi-trash"></i></a> </td>
                             </tr> 
                         {% endfor %}
-                    {% endif %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            {% else %}
+                <p>It seems like there is no general courses here, would you like to add all the general courses?</p>
+                <a href="{% url 'ssapp:add_ge_courses' curriculum.pk %}" class="btn btn-outline-secondary">Okay please!</a>
+            {% endif %}
+
         </div>
         <h2 class="display-7 fw-bold mt-4">Professional Courses</h2>
-        <p class="fs-4">Maximum: </p>
+        <p class="fs-4">Maximum: {{ curriculum.total_credits|add:"-30" }} </p>
         <div class="table-responsive">
             <table class="table table-hover" id="professional_courses">
                 <thead>
@@ -89,6 +96,16 @@
 
 {% endblock %}
 {% block script %}
+    $('#hide').click(function (e) {
+        $("#ge_courses").fadeOut(300);
+
+    })
+    $('#show').click(function (e) {
+        $("#ge_courses").fadeIn(300);
+    })
+
+
+
     $('#add_course').submit(function (e) {
     let select = $("select").val()
     console.log(select);
@@ -101,9 +118,7 @@
     url: url_mask,
     data: serializedData,
     success: function (response) {
-    $("#add_course").trigger('reset');
-    $("#id_courses").focus();
-
+        location.reload();
     },
     error: function(response) {
     }

@@ -28,10 +28,11 @@
                     {% endfor %}
 
               </select>
-              <input type="text" id="others" class="my-2 form-control" />
-            <input type="submit" value="Enroll" placeholder="Others" class="my-2 btn btn-outline-primary" id="enroll">
+            <label>Course ID:</label>
+            <input type="text" id="unlisted_cid" name="courses" class="form-control"/>
+            <input type="submit" value="Enroll" class="my-2 btn btn-outline-primary" id="enroll">
         </form>
-        <h2 class="display-7 fw-bold mt-5" >Enrolled Courses</h2>
+       <h2 class="display-7 fw-bold mt-5" >Enrolled Courses</h2>
         <div class="table-responsive">
         <table class="table table-hover" id="en_table">
             <thead>
@@ -99,11 +100,6 @@
         }
         })   
     }
-
-    $(document).ready(function() {
-    fetchData();
-    })
-
     $(document).on('click', '[id^=unenroll]', function() {
         console.log("Clicked on unenroll");
         let course_id = $(this).attr('value');
@@ -116,20 +112,17 @@
         })
     $('#enroll_course').submit(function (e) {
     let select = $("select").val();
-    let others = $("#others").val();
-    if (others != undefined && others != "") {
-        select.push(others);
+    if (select.length == 0) {
+        select = $("#unlisted_cid").val();
     }
     console.log(select);
     $("form").append(`
     <input type="hidden" name="courses" value=${select} /> 
     <input type="hidden" name="type" value="enroll" />
     `);
-    e.preventDefault();
     var serializedData = $(this).serialize();
-    sendData(serializedData, true);
-    $("form").trigger('reset');
-
+    $("#unlisted_cid").text("");
+    sendData(serializedData, false);
    })
 
 {% endblock %}

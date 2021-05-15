@@ -1,6 +1,6 @@
 # To do:
 - ~~Modify model to get courses total for account.enrolled_class~~
-- Fix the enroll course for students
+- ~~Fix the enroll course for students~~
 - Notification
 - Work on the curriculum
 - Course completion
@@ -11,7 +11,7 @@
 # To be fixed:
 - ~~Extra col that is pushed when using colspan~~
 - ~~Curriculum somehow gives out an error, temporary fixed by another model known as Program~~
-- The same class cannot have multiple session in the same day
+- ~~The same class cannot have multiple session in the same day~~
 - Course's Availability
 - ~~Multiple Class objects with the same course, should be only one~~
 - ~~Signup forms error~~

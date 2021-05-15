@@ -1,6 +1,9 @@
 {% extends 'ssapp/base.html' %}
 {% load static %}
 {% block header_admin_curr %} <span class="text-muted"> Curriculum </span> {% endblock %}
+{% block html_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
     {% block body %}
    <div class="container py-2">
       <div class="p-5 mb-4 bg-light rounded-3">
@@ -18,6 +21,7 @@
           <form id="create_curriculum">
               {% csrf_token %}
               {{ form }} 
+              <input type="hidden" name="type" value="add" />
               <input type="submit" class="mt-2 btn btn-outline-primary" value="Submit" /> 
           </form>
           </div>
@@ -32,12 +36,13 @@
           </tr>
           </thead>
           <tbody>
+                <input type="hidden" name='csrf' value='{{ csrf_token }}' />
           {% for curr in all_curr %}
           <tr>
               <td><a href="{% url 'ssapp:admin_detail_curriculum' curr.pk %}">{{ curr.name }} </a></td>
               <td>{{ curr.total_credits }}</td>
               <td>{{ curr.faculty }}</td>
-              <td>Action</td>
+              <td> <button type="button" id="delete_{{curr.pk}}" value="{{ curr.pk }}" class="btn btn-link"><i class="bi bi-trash text-danger"></i></button></td>
           </tr>
           {% endfor %}
           </tbody>
@@ -56,27 +61,7 @@
                     url: "{% url 'ssapp:admin_curriculum' %}",
                     data: serializedData,
                     success: function (response) {
-                       console.log(response);
-                        console.log("JSON", JSON.parse(response["instance"]));
-                        let instance = JSON.parse(response["instance"]);
-                        let curr = instance[0]["fields"];
-                        name = curr["name"];
-                        pk = instance[0]["pk"] 
-                        faculty = $("select option:selected").text();
-                        let url_mask = "{% url 'ssapp:admin_detail_curriculum' 12345 %}".replace(/12345/, pk);
-                        $("tbody").append(
-                        `
-                        <tr>
-                            <td><a href=${url_mask}>${name}</a></td>
-                            <td>${curr["total_credits"]}</td>
-                            <td>${faculty}</td>
-                            <td>Action</td>
-                        </tr>
-                        `
-                        );
-                        $("#create_curriculum").trigger('reset');
-                        $("#id_name").focus();
-                        
+                        location.reload();                        
                         },
                         error: function(response) {
                             console.log(resonse["responseJSON"]["error"]);
@@ -84,5 +69,25 @@
 
                 })
             })
+    $(document).on('click', '[id^=delete]', function() {
+        console.log("Clicked on delete");
+        let curr_id = $(this).attr('value');
+        const data = {
+            'type': "delete",
+            'curr_pk': curr_id,
+            'csrfmiddlewaretoken': $('input[name=csrf]').val()
+        };
+        $.ajax({
+            type: "POST",
+            url: "{% url 'ssapp:admin_curriculum' %}",
+            data: data,
+            success: function (response) {
+                location.reload();
+            }, 
+            error: function(response) {
 
+            }
+                    
+        })
+        })
         {% endblock %}

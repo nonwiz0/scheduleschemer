@@ -7,28 +7,75 @@
       <div class="container-fluid py-5 mb-2">
           <h1 class="display-5 fw-bold">{{ account.major }}</h1>
             <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
-            <p class="col-md-8 fs-4 mb-4"> Curriculum </p>
+            <p class="col-md-8 fs-4 mb-4"> {{ account.major.total_credits }} credits </p>
       </div>
       </div>
 
       </div>
-      <div class="p-5">
+      <div class="p-3">
       <h2 class="display-7 fw-bold">General Education Courses</h2>
       <p class="fs-4">Maximum: 30 Credits</p>
-      <table class="table">
+      <div class="table-responsive">
+      <table class="table table-hover">
           <tr>
               <th>CourseID</th>
               <th>CourseName</th>
               <th class="text-center">Credits</th>
           </tr>
-          {% for course in account.major.courses.all %}
+          {% for course in ge_courses %}
           <tr>
-              <td>{{ course.id }} {{ course.category }}</td>
+              <td>{{ course.id }} </td>
+              <td>{{ course.name }}</td>
+              <td class="text-center">{{ course.credits }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            
+          </tr>
+      </table>
+      </div>
+      </div>
+
+       <div class="p-3">
+      <h2 class="display-7 fw-bold">Professional Courses</h2>
+      <p class="fs-4">Maximum: {{ account.major.total_credits|add:"-30" }} Credits</p>
+      <div class="table-responsive">
+      <table class="table table-hover">
+          <tr>
+              <th>CourseID</th>
+              <th>CourseName</th>
+              <th class="text-center">Credits</th>
+          </tr>
+          {% for course in pro_courses %}
+          <tr>
+              <td>{{ course.id }} </td>
               <td>{{ course.name }}</td>
               <td class="text-center">{{ course.credits }}</td>
           </tr>
           {% endfor %}
       </table>
+      </div>
+      </div>
+    
+       <div class="p-3">
+      <h2 class="display-7 fw-bold">Completed Courses</h2>
+      <p class="fs-4">Earned: {{ account.earned_credits }} Credits</p>
+      <div class="table-responsive">
+      <table class="table table-hover">
+          <tr>
+              <th>CourseID</th>
+              <th>CourseName</th>
+              <th class="text-center">Credits</th>
+          </tr>
+          {% for course in account.completed_course.all %}
+          <tr>
+              <td>{{ course.id }} </td>
+              <td>{{ course.name }}</td>
+              <td class="text-center">{{ course.credits }}</td>
+          </tr>
+          {% endfor %}
+      </table>
+      </div>
       </div>
     
         {% endblock %}
