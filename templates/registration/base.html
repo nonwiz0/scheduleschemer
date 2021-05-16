@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
     <head>
@@ -15,7 +16,7 @@
         </style>
     </head>
     <body>
-  {# Alert #}
+        {# Alert #}
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5;">
             <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
@@ -29,15 +30,9 @@
                 </div>
             </div>
         </div>
-
-
-        <div class="container">       
-            {% block body %}
-            {% endblock %}
-        </div>
-
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
         <script>
-    const option_toast = 
+            const option_toast = 
                 {
                     animation : true,
                     delay : 2000
@@ -48,16 +43,20 @@
                 document.getElementById('status').innerHTML = status;
                 document.getElementById('message').innerHTML = message; 
                 var toastHTMLElement = document.getElementById( 'liveToast' ); 
-                console.log(toastHTMLElement)
                 var toastElement = new bootstrap.Toast( toastHTMLElement, option_toast ); 
-                toastElement.show( );
+                toastElement.show();
             }
+        </script>
 
 
+        <div class="container">       
+            {% block body %}
+            {% endblock %}
+        </div>
 
+        <script>
             {% block script %}
             {% endblock %}
         </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
     </body>
 </html>

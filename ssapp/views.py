@@ -85,6 +85,9 @@ class UserCurriculum(LoginRequiredMixin, generic.TemplateView):
             if type and type == 'complete':
                 course = Course.objects.get(pk=request.POST['course_id'])
                 curr_acc.completed_course.add(course)
+                credits = 0
+                for course in self.completed_course.all():
+                    credits += course.credits
                 curr_acc.save()
         return JsonResponse({"instance": ""}, status=200)
 
@@ -229,6 +232,36 @@ class AdminDashboard(LoginRequiredMixin, generic.TemplateView):
     def get(self, *args, **kwargs):
         context = {"all_courses": Course.objects.all(), 'all_faculty': Faculty.objects.all()}
         return render(self.request, self.template_name, context)
+
+    def post(self, *args, **kwargs):
+        action = self.request.POST.get('type', '')
+        if action == 'delete_course':
+            course_id = Course.objects.get(pk=self.request.POST['course_id'])
+            course_id.delete()
+            print(course_id, action)
+        if action == 'update_course':
+            course_id = Course.objects.get(pk=self.request.POST['course_id'])
+            name = self.request.POST['course_name']
+            if name is not '':
+                course_id.name = name
+            credits = self.request.POST['credits']
+            if credits:
+                course_id.credits = credits
+            faculty = self.request.POST['faculty']
+            if faculty:
+                course_id.faculty.clear()
+                course_id.faculty.add(Faculty.objects.get(pk=faculty))
+            course_id.save()
+        if action == 'create_faculty':
+            faculty = self.request.POST['faculty']
+            if faculty:
+                faculty = Faculty(name=faculty)
+                faculty.save()
+        if action == 'delete_faculty':
+            faculty = self.request.POST['faculty']
+            if faculty:
+                faculty = Faculty.objects.get(pk=faculty).delete()
+        return JsonResponse({"instance": ""}, status=200)
 
 
 class AdminCourse(LoginRequiredMixin, generic.CreateView):

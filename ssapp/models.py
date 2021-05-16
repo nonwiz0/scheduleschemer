@@ -4,7 +4,6 @@ from picklefield.fields import PickledObjectField
 # Create your models here.
 class Faculty(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    short_name = models.CharField(max_length=5)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -27,22 +26,7 @@ class Account(models.Model):
     
     def __str__(self):
         return "Username: {}".format(self.user.username)
-    
-    def save(self, *args, **kwargs):
-        credits = 0
-        for course in self.completed_course.all():
-            credits += course.credits
-        self.earned_credits = credits
-        super().save(*args, **kwargs)
-            
 
-
-class CourseCategory(models.Model):
-    type = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return "{}".format(self.type)
-    
 class Course(models.Model):
     id =  models.CharField(max_length=10, primary_key=True)
     name =  models.CharField(max_length=50)

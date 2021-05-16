@@ -177,15 +177,14 @@
             'day': day,
             'csrfmiddlewaretoken': csrf
         }
-        let name = $('h1').text();
+        let name = $('h1').text(); 
         let url_mask = "{% url 'ssapp:admin_class' 12345 %}".replace(/12345/, name);
-
         $.ajax({
             type: "POST",
             url: url_mask,
             data: data,
             success: function(response) {
-            location.reload();
+            setTimeout(() => {location.reload()}, 1500);
             }
         })
      })
@@ -221,7 +220,8 @@
     url: url_mask,
     data: serializedData,
     success: function(response) {
-        location.reload();
+    Toasty("Update initiated", `updating class schedule`);
+        setTimeout(()=>{location.reload()}, 1700)
     }
     })
 

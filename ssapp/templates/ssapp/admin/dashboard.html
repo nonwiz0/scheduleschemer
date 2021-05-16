@@ -17,7 +17,7 @@
         <div class="h-100 p-5 text-dark bg-light border rounded-3">
           <h2>Course</h2>
           <form id="update_course">
-              {% csrf_token %}
+              <input type="hidden" id="csrf" value="{{ csrf_token }}" />
               <div class="row px-3">
                <select name="" id="update_course_select" class="form-control m-1">
                    <option>---</option>
@@ -35,7 +35,7 @@
                       <input type="number" placeholder="credits" min="0" max="20" name="update_course_credits" id="update_course_credits" class="form-control" />
                   </div>
                   <div class="col-8">
-                      <select name="update_course_faculty" class="form-control">
+                      <select id="update_course_faculty" class="form-control">
                           <option>---</option>
                           {% for faculty in all_faculty %}
                               <option value="{{ faculty.pk }}">{{ faculty }}</option>
@@ -62,10 +62,9 @@
       <div class="col-md-6">
         <div class="h-100 p-5 text-white bg-dark rounded-3">
              <h2>Faculty</h2>
-             <form id="create_faculty">
-                 <input type="hidden" name="csrf" value="{{ csrf_token }}" />
-                <input type="text" name="create_faculty_input" placeholder="Name:" class="form-control" />
-                <input type="submit" value="Create" class="btn btn-outline-light mt-2" />
+             <form>
+                <input type="text" id="create_faculty_input" placeholder="Name:" class="form-control" />
+                <input type="button" value="Create" id="create_faculty_btn" class="btn btn-outline-light mt-2" />
              </form>
 
         </div>
@@ -79,7 +78,7 @@
                         <option value="{{ faculty.pk }}">{{ faculty }}</option>
                     {% endfor %}
                 </select>
-                <input type="submit" value="Delete" class="btn btn-danger mt-2" />
+                <input type="button" id="delete_faculty_btn" value="Delete" class="btn btn-danger mt-2" />
             </form>
         </div>
       </div>
@@ -89,4 +88,99 @@
 
 {% endblock %}
 
+{% block script %}
+function fetchData() {
+    $.ajax({
+    url: "{% url 'ssapp:admin_dashboard' %}",
+    type: 'GET',
+    success: function(data) {
+    }
+    })
+    }
 
+const sendData = (data, refresh) => {
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'ssapp:admin_dashboard' %}",
+        data: data,
+        success: function (response) {
+
+        },
+        error: function(response) {
+        },
+        complete: function() {
+            if (refresh) {
+            setTimeout(() => {location.reload()}, 1500);
+            }
+        }
+        })   
+    }
+    $("#delete_course").click(function (e) {
+        let course = $("#update_course_select").val();
+        let csrf = $("#csrf").val();
+        if (course != "---") {
+        let data = {
+        'type': "delete_course",
+        'course_id': course,
+        'csrfmiddlewaretoken': csrf
+        }
+        let approve_delete = confirm(`Are you sure you want to delete ${course}?`)
+        if (approve_delete) {
+        Toasty("Received Delete Request", `Deleting course: ${course}`);
+        sendData(data, true);
+        }
+      }
+    })
+    $("#create_faculty_btn").click(function (e) {
+    console.log("click on create faculty")
+        let faculty = $("#create_faculty_input").val();
+        let csrf = $("#csrf").val();
+        let data_create = {
+        'type': "create_faculty",
+        'faculty': faculty,
+        'csrfmiddlewaretoken': csrf
+        }
+        if (faculty) {
+        Toasty("Received Create Request", `Attempting to creating faculty: ${faculty}`);
+        sendData(data_create, true)
+        }
+        
+    })
+
+ $("#delete_faculty_btn").click(function (e) {
+        let faculty = $("#delete_faculty_select").val();
+        let csrf = $("#csrf").val();
+        let faculty_name = $("#delete_faculty_select option:selected").text();
+        let data = {
+        'type': "delete_faculty",
+        'faculty': faculty,
+        'csrfmiddlewaretoken': csrf
+        }
+        let approve_delete = confirm(`Are you sure you want to delete ${faculty_name}?`)
+        if (approve_delete) {
+        Toasty("Received Delete Request", `Attempting to delete faculty: ${faculty_name}`);
+        sendData(data, true);
+        }
+      
+    })
+    
+ $("#update_course_update").click(function (e) {
+        let course = $("#update_course_select").val();
+        let csrf = $("#csrf").val();
+        if (course != "---") {
+        let faculty = $('#update_course_faculty').val()
+        if (faculty == "---") { faculty = "" }
+        let data = {
+        'type': "update_course",
+        'course_id': course,
+        'course_name': $('#update_course_name').val(),
+        'credits': $('#update_course_credits').val(),
+        'faculty': faculty,
+        'csrfmiddlewaretoken': csrf
+        }
+        console.log(data);
+        Toasty("Received Update Request", `Updating ${course}`);
+        sendData(data, true); 
+        }
+    })
+{% endblock %}

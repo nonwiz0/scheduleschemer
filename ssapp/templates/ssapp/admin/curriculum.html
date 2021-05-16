@@ -23,7 +23,7 @@
               {% csrf_token %}
               {{ form }} 
               <input type="hidden" name="type" value="add" />
-              <input type="submit" class="mt-2 btn btn-outline-primary" value="Submit" /> 
+              <input type="submit" class="mt-2 btn btn-outline-primary" value="Create" /> 
           </form>
           </div>
       <h2 class="display-7 fw-bold">List of Curriculum</h2>
@@ -81,6 +81,8 @@
             'curr_pk': curr_id,
             'csrfmiddlewaretoken': $('input[name=csrf]').val()
         };
+        let confirm_delete = confirm("Do you really want to delete this curriculum?");
+        if (confirm_delete) {
         $.ajax({
             type: "POST",
             url: "{% url 'ssapp:admin_curriculum' %}",
@@ -94,5 +96,6 @@
             }
                     
         })
+        }
         })
         {% endblock %}
