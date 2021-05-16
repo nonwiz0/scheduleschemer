@@ -1,81 +1,169 @@
 {% extends 'ssapp/base.html' %}
 {% load static %}
+{% block title %} Curriculum {% endblock %}
+{% block html_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
 {% block header_curr %} <span class="text-muted"> Curriculum </span> {% endblock %}
-    {% block body %}
-   <div class="container py-2">
-      <div class="p-5 mb-4 bg-light rounded-3">
-      <div class="container-fluid py-5 mb-2">
-          <h1 class="display-5 fw-bold">{{ account.major }}</h1>
-            <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
-            <p class="col-md-8 fs-4 mb-4"> {{ account.major.total_credits }} credits </p>
-      </div>
-      </div>
+{% block body %}
+    <div class="container py-2">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-5 mb-2">
+                <h1 class="display-5 fw-bold">{{ account.major }}</h1>
+                <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
+                <p class="col-md-8 fs-4 mb-4"> {{ account.major.total_credits }} credits </p>
+            </div>
+        </div>
 
-      </div>
-      <div class="p-3">
-      <h2 class="display-7 fw-bold">General Education Courses</h2>
-      <p class="fs-4">Maximum: 30 Credits</p>
-      <div class="table-responsive">
-      <table class="table table-hover">
-          <tr>
-              <th>CourseID</th>
-              <th>CourseName</th>
-              <th class="text-center">Credits</th>
-          </tr>
-          {% for course in ge_courses %}
-          <tr>
-              <td>{{ course.id }} </td>
-              <td>{{ course.name }}</td>
-              <td class="text-center">{{ course.credits }}</td>
-          </tr>
-          {% endfor %}
-          <tr>
-            
-          </tr>
-      </table>
-      </div>
-      </div>
+    </div>
+    <div class="p-3">
+        <h2 class="display-7 fw-bold">General Education Courses</h2>
+        <p class="fs-4">Maximum: 30 Credits</p>
+        <div class="table-responsive">
+            <table class="table table-hover">
 
-       <div class="p-3">
-      <h2 class="display-7 fw-bold">Professional Courses</h2>
-      <p class="fs-4">Maximum: {{ account.major.total_credits|add:"-30" }} Credits</p>
-      <div class="table-responsive">
-      <table class="table table-hover">
-          <tr>
-              <th>CourseID</th>
-              <th>CourseName</th>
-              <th class="text-center">Credits</th>
-          </tr>
-          {% for course in pro_courses %}
-          <tr>
-              <td>{{ course.id }} </td>
-              <td>{{ course.name }}</td>
-              <td class="text-center">{{ course.credits }}</td>
-          </tr>
-          {% endfor %}
-      </table>
-      </div>
-      </div>
-    
-       <div class="p-3">
-      <h2 class="display-7 fw-bold">Completed Courses</h2>
-      <p class="fs-4">Earned: {{ account.earned_credits }} Credits</p>
-      <div class="table-responsive">
-      <table class="table table-hover">
-          <tr>
-              <th>CourseID</th>
-              <th>CourseName</th>
-              <th class="text-center">Credits</th>
-          </tr>
-          {% for course in account.completed_course.all %}
-          <tr>
-              <td>{{ course.id }} </td>
-              <td>{{ course.name }}</td>
-              <td class="text-center">{{ course.credits }}</td>
-          </tr>
-          {% endfor %}
-      </table>
-      </div>
-      </div>
-    
-        {% endblock %}
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th class="text-center">Action</th>
+                </tr>
+
+                {% for course in ge_courses %}
+                    {% if course in account.completed_course.all %} 
+                        <tr class="bg-success text-white">
+                            <input type="hidden" name='csrf' value='{{ csrf_token }}' />
+                        {% else %}
+                            <tr>
+                            {% endif %}
+                            <td>{{ course.id }} </td>
+                            <td>{{ course.name }} ({{ course.credits }})</td>
+                            <td class="text-center">{% if course in account.completed_course.all %} 
+                                    <button type="button" id="unenroll_{{ course.pk }}" value="{{ course.pk }}" class="btn btn-link"><i class="bi bi-trash text-light"></i></button>
+                                {% else %}  
+                                    <button class="btn btn-link" id="complete_{{ course.pk }}" value="{{ course.pk }}"><i class="bi bi-check2-circle text-primary"></i></button> 
+                                {% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+
+                        </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="p-3">
+        <h2 class="display-7 fw-bold">Professional Courses</h2>
+        <p class="fs-4">Maximum: {{ account.major.total_credits|add:"-30" }} Credits</p>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th class="text-center">Action</th>
+                </tr>
+
+                {% for course in pro_courses %}
+                    {% if course in account.completed_course.all %} 
+                        <tr class="bg-success text-white">
+                            <input type="hidden" name='csrf' value='{{ csrf_token }}' />
+                        {% else %}
+                            <tr>
+                            {% endif %}
+                            <td>{{ course.id }} </td>
+                            <td>{{ course.name }} ({{ course.credits }})</td>
+                            <td class="text-center">{% if course in account.completed_course.all %} 
+                                    <button type="button" id="unenroll_{{ course.pk }}" value="{{ course.pk }}" class="btn btn-link"><i class="bi bi-trash text-light"></i></button>
+                                {% else %}  
+                                    <button class="btn btn-link" id="complete_{{ course.pk }}" value="{{ course.pk }}"><i class="bi bi-check2-circle text-primary"></i></button> 
+                                {% endif %}</td>
+                            </tr>
+                        {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="p-3">
+        <h2 class="display-7 fw-bold">Others</h2>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th class="text-center">Action</th>
+                </tr>
+                {% for course in other_courses %}
+                    <tr>
+                        <td>{{ course.id }} </td>
+                        <td>{{ course.name }} ({{ course.credits }})</td>
+                        <td class="text-center">   <button type="button" id="unenroll_{{ course.pk }}" value="{{ course.pk }}" class="btn btn-link"><i class="bi bi-trash text-danger"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+
+    <div class="p-3">
+        <h2 class="display-7 fw-bold">Current Enrollment</h2>
+        <p class="fs-4">{{ register }} Credits</p>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th class="text-center">Action</th>
+                </tr>
+                {% for class in account.enrolled_class.all %}
+                    <tr>
+                        <td>{{ class.course.id }} </td>
+                        <td>{{ class.course.name }} ({{ class.course.credits }})</td>
+                        <td class="text-center">
+                            <button class="btn btn-link" id="complete_{{ class.course.pk }}" value="{{ class.course.pk }}"><i class="bi bi-check2-circle text-primary"></i></button> 
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+{% block script %}
+    const sendData = (data, refresh) => {
+    $.ajax({
+    type: 'POST',
+    url: "{% url 'ssapp:curriculum' %}",
+    data: data,
+    success: function (response) {
+    },
+    error: function(response) {
+    },
+    complete: function() {
+    if (refresh) {
+    setTimeout(() => {location.reload()}, 1500);
+    }
+    }
+    })   
+    }
+
+    $(document).on('click', '[id^=unenroll]', function() {
+    let course_id = $(this).attr('value');
+    const data = {
+    'type': "unenroll",
+    'course_id': course_id,
+    'csrfmiddlewaretoken': $('input[name=csrf]').val()
+    };
+    Toasty("Request Received", `Resetting ${course_id} status`)
+    sendData(data, true);
+    })
+
+    $(document).on('click', '[id^=complete]', function() {
+    let course_id = $(this).attr('value');
+    const data = {
+    'type': "complete",
+    'course_id': course_id,
+    'csrfmiddlewaretoken': $('input[name=csrf]').val()
+    };
+    Toasty("Request Received", `Changing ${course_id} to complete`);
+    sendData(data, true);
+    })
+{% endblock %}

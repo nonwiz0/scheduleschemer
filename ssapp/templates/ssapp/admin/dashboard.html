@@ -1,0 +1,92 @@
+{% extends 'ssapp/base.html' %}
+{% load static %}
+{% block header_admin_dashboard %} <span class="text-muted"> Dashboard </span> {% endblock %}
+{% block title %} Dashboard {% endblock %}
+{% block body %}
+       <div class="container py-2">
+      <div class="p-5 mb-4 bg-light rounded-3">
+      <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold mb-2">Schedule Schemer</h1>
+            <img class="float-end" src="{% static 'images/undraw_features_overview_jg7a.svg' %}" height="150px">
+        <p class="col-md-8 fs-4 mb-4"> Generate your schedule at ease </p>
+      </div>
+
+      </div>
+ <div class="row align-items-md-stretch mt-4">
+      <div class="col-md-6">
+        <div class="h-100 p-5 text-dark bg-light border rounded-3">
+          <h2>Course</h2>
+          <form id="update_course">
+              {% csrf_token %}
+              <div class="row px-3">
+               <select name="" id="update_course_select" class="form-control m-1">
+                   <option>---</option>
+                   {% for course in all_courses %}
+                       <option value="{{ course.pk }}">{{ course }}</option>
+                    {% endfor %}
+               </select>
+              </div>
+              <div class="row px-3">
+              <input type="text" id="update_course_name" value="" placeholder="Name" name="update_course_name" class="form-control m-1"/>
+              </div>
+              <hr />
+              <div class="row">
+                  <div class="col-4">
+                      <input type="number" placeholder="credits" min="0" max="20" name="update_course_credits" id="update_course_credits" class="form-control" />
+                  </div>
+                  <div class="col-8">
+                      <select name="update_course_faculty" class="form-control">
+                          <option>---</option>
+                          {% for faculty in all_faculty %}
+                              <option value="{{ faculty.pk }}">{{ faculty }}</option>
+                            {% endfor %}
+                      </select>
+                  </div>
+        </div>
+        <hr />
+              <div class="m-2 row">
+            <input value="Delete" id="delete_course" class="btn btn-danger btn-block" />
+            <input value="Update" id="update_course_update" class="btn btn-outline-secondary my-1 btn-block" />
+              </div>
+                      </form>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="text-center h-100 p-5 bg-dark text-light rounded-3">
+            <img src="{% static 'images/undraw_Loading_re_5axr.svg' %}" class="img-fluid" style="height: 250px !important" />
+        </div>
+      </div>
+    </div>
+
+ <div class="row align-items-md-stretch mt-2">
+      <div class="col-md-6">
+        <div class="h-100 p-5 text-white bg-dark rounded-3">
+             <h2>Faculty</h2>
+             <form id="create_faculty">
+                 <input type="hidden" name="csrf" value="{{ csrf_token }}" />
+                <input type="text" name="create_faculty_input" placeholder="Name:" class="form-control" />
+                <input type="submit" value="Create" class="btn btn-outline-light mt-2" />
+             </form>
+
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="h-100 p-5 bg-light border rounded-3">
+            <h2>Delete</h2>
+            <form id="delete_faculty">
+                <select id="delete_faculty_select" class="form-control">
+                    {% for faculty in all_faculty %}    
+                        <option value="{{ faculty.pk }}">{{ faculty }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Delete" class="btn btn-danger mt-2" />
+            </form>
+        </div>
+      </div>
+    </div>
+    
+      </div>
+
+{% endblock %}
+
+

@@ -1,11 +1,11 @@
 # To do:
 - ~~Modify model to get courses total for account.enrolled_class~~
 - ~~Fix the enroll course for students~~
-- Notification
-- Work on the curriculum
-- Course completion
+- ~~Notification~~
+- ~~Work on the curriculum~~
+- ~~Course completion~~
 - Check the authorization
-- Add the message
+- ~~Add the message~~
 - ~~Fix multiple schedule, maybe add more to the array? [a, b, a1, b1]~~ Yup!
 
 # To be fixed:

@@ -28,7 +28,7 @@
                     {% endfor %}
 
               </select>
-              <input type="text" id="others" class="my-2 form-control" />
+              <input type="text" id="others" placeholder="Course ID" class="my-2 form-control" />
             <input type="submit" value="Enroll" placeholder="Others" class="my-2 btn btn-outline-primary" id="enroll">
         </form>
         <h2 class="display-7 fw-bold mt-5" >Enrolled Courses</h2>
@@ -49,9 +49,9 @@
                         <td>{{ class.course.id }} </td>
                         <td>{{ class.course.name }}</td>
                         <td class="text-center">{{ class.course.credits }}</td>
-                        <td class="text-center">
-                            <button class="btn btn-link"><i class="bi bi-check2-circle text-primary"></i></button> | 
-                            <button type="button" id="unenroll_{{class.course.id}}" value="{{ class.course.id }}" class="btn btn-link"><i class="bi bi-trash text-danger"></i></button></td>
+                        <td class="text-center"><span>
+                                <button type="button" id="unenroll_{{class.course.id}}" value="{{ class.course.id }}" class="btn btn-link"><i class="bi bi-trash text-danger"></i></button>
+                        </td>
                    </tr>
             {% endfor %}
             <tr>
@@ -89,12 +89,13 @@
         url: "{% url 'ssapp:course' %}",
         data: data,
         success: function (response) {
+
         },
         error: function(response) {
         },
         complete: function() {
         if (refresh) {
-            location.reload();
+        setTimeout(() => {location.reload()}, 1500);
         }
         }
         })   
@@ -112,6 +113,7 @@
             'course_id': course_id,
             'csrfmiddlewaretoken': $('input[name=csrf]').val()
         };
+        Toasty("Request Received", `Attempting to unenroll ${course_id}`);
         sendData(data, true);
         })
     $('#enroll_course').submit(function (e) {
@@ -129,6 +131,7 @@
     var serializedData = $(this).serialize();
     sendData(serializedData, true);
     $("form").trigger('reset');
+    Toasty("Request Received", `Attempting to enroll ${select}`);
 
    })
 

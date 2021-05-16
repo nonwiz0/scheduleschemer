@@ -1,12 +1,13 @@
 {% extends 'ssapp/base.html' %}
 {% load static %}
 {% block header_admin_course %} <span class="text-muted"> Course </span> {% endblock %}
+{% block title %} Courses {% endblock %}
 {% block body %}
     <div class="container py-2">
         <div class="p-5 mb-2 bg-light rounded-3">
             <div class="container-fluid py-5 mb-2">
                 <h1 class="display-5 fw-bold">All Courses</h1>
-                <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
+                <img class="float-end" src="{% static 'images/undraw_Books_l33t.svg' %}" height="150px">
                 <p class="col-md-8 fs-4 mb-4"> Manage Courses </p>
             </div>
         </div>
@@ -96,6 +97,7 @@
     </tr>
     `
     );
+    Toasty("Course Creation", `Successfully created ${instance[0]["pk"]}`);
     $("#create_course").trigger('reset');
     $("#id_id").focus();
 

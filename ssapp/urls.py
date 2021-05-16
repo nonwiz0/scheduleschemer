@@ -10,7 +10,9 @@ urlpatterns = [
     path('course', views.UserEnrollCourse.as_view(), name='course'),
     path('<str:pk>/profile', views.DetailProfile.as_view(), name='profile'),
     path('signup', views.Signup.as_view(), name='signup'),
+#    path('curriculum/unenroll', views.unenroll_course_from_curriculum, name="unenroll_course"),
 
+    path('admin/dashboard', views.AdminDashboard.as_view(), name="admin_dashboard"),
     path('admin/course', views.AdminCourse.as_view(), name="admin_course"),
     path('admin/<str:pk>/course', views.AdminDetailCourse.as_view(), name="admin_class"),
     path("admin/curriculum", views.AdminCurriculum.as_view(), name="admin_curriculum"),

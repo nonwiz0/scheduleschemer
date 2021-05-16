@@ -1,5 +1,6 @@
 {% extends 'ssapp/base.html' %}
 {% load static %}
+{% block title %} Curriculum {% endblock %}
 {% block header_admin_curr %} <span class="text-muted"> Curriculum </span> {% endblock %}
 {% block html_head %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
@@ -9,7 +10,7 @@
       <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5 mb-2">
         <h1 class="display-5 fw-bold">Curriculum</h1>
-            <img class="float-end" src="{% static 'images/undraw_accept_tasks_po1c.svg' %}" height="150px">
+            <img class="float-end" src="{% static 'images/undraw_Booking_re_gw4j.svg' %}" height="150px">
         <p class="col-md-8 fs-4 mb-4"> Manage Curriculum </p>
       </div>
       </div>
@@ -61,10 +62,13 @@
                     url: "{% url 'ssapp:admin_curriculum' %}",
                     data: serializedData,
                     success: function (response) {
-                        location.reload();                        
+                        Toasty("Curriculum", `Creating ${$("#id_name").val()}`);
+                        setTimeout(()=>{location.reload()}, 1500)
                         },
                         error: function(response) {
-                            console.log(resonse["responseJSON"]["error"]);
+                         Toasty("Error", `Unable to create ${$("#id_name").val()}`);
+                        setTimeout(()=>{location.reload()}, 1500)
+                            
                         }
 
                 })
@@ -82,7 +86,8 @@
             url: "{% url 'ssapp:admin_curriculum' %}",
             data: data,
             success: function (response) {
-                location.reload();
+                 Toasty("Curriculum", `Deleting curriculum`);
+                setTimeout(()=>{location.reload()}, 1500)
             }, 
             error: function(response) {
 

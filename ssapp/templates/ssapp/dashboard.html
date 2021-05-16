@@ -20,16 +20,6 @@
         </div>
 
     </div>
-    <div class="container py-2">
-        <div class="p-5 mb-4 bg-light rounded-3">
-            <h2>Detail: </h2>
-            <ul>
-                {% for class in class_list %}
-                    <li>{{ class.course }}, {{ class.daytime|safe }} </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
     <div class="container">
         <div class="table-responsive p-1 mb-1 bg-white rounded-3" id="output"></div>
         <div class="my-1 text-center">
@@ -42,113 +32,114 @@
 
 
 {% block script %}
+
     function reload() {
-        location.reload();
+    location.reload();
     }
-   
+
     function generate_color() {
-   let color_range = ["#253D5B", "#67697C", "#080708", "#655560", "#70163C", "#120309", "#364156", "#7D4E57", "#11151C", "#2E294E", "#D90368", "#F96900", "#044389", "#FC60A8", "#353B3C", "#AA4465", "#210124", "#750D37", "#7B0828", "#522B47", "#D64933", "#2B303A", "#0C7C59", "#1A535C", "#FF6B6B", "#1D8A99", "#212922", "#3E6259", "#006D77", "#22223B"]
-   return color_range[Math.floor(Math.random() * color_range.length)]; 
+    let color_range = ["#253D5B", "#67697C", "#080708", "#655560", "#70163C", "#120309", "#364156", "#7D4E57", "#11151C", "#2E294E", "#D90368", "#F96900", "#044389", "#FC60A8", "#353B3C", "#AA4465", "#210124", "#750D37", "#7B0828", "#522B47", "#D64933", "#2B303A", "#0C7C59", "#1A535C", "#FF6B6B", "#1D8A99", "#212922", "#3E6259", "#006D77", "#22223B"]
+    return color_range[Math.floor(Math.random() * color_range.length)]; 
     }
     const WEEK = 'Mon Tue Wed Thu Fri'.split(' ')
 
     function Schedule ({days, hours}) {
-        this.days = days;
-        this.hours = hours;
-        this.schedule = [];
+    this.days = days;
+    this.hours = hours;
+    this.schedule = [];
 
-        for (let x = 0; x < days.length; x++) {
-            this.schedule[x] = [];
-            for (let y = 0; y < hours.length; y++) {
-                this.schedule[x][y] = undefined;
-            }
+    for (let x = 0; x < days.length; x++) {
+        this.schedule[x] = [];
+        for (let y = 0; y < hours.length; y++) {
+        this.schedule[x][y] = undefined;
+        }
         }
 
         this.addItem = (day, hour, item) => {
-            const dayIndex = this.days.indexOf(day);
-            if (dayIndex < 0) {
-                console.log('invalid day');
-                return;
-            }
-
-            const hourIndex = this.hours.indexOf(hour);
-            if (hourIndex < 0) {
-                return;
-            }
-
-            this.schedule[dayIndex][hourIndex] = item;
-        }
-    }
-
-    function generateTable (timetable) {
-        let thead = '';
-        let tbody = '';
-        let skip_col = 0;
-
-        thead += `<th>Day/Time</th>`
-        for (const hr of timetable.hours) {
-            thead += `<th>${hr} - ${hr}:50</th>`
+        const dayIndex = this.days.indexOf(day);
+        if (dayIndex < 0) {
+        console.log('invalid day');
+        return;
         }
 
-        for (let x = 0; x < timetable.days.length; x++) {
-            tbody += `<tr> <td>${timetable.days[x]}</td>`
-            for (let y = 0; y < timetable.hours.length; y++) {
-                col = timetable.schedule[x][y];
-                if (col != undefined) {
-                        if (col.indexOf("colspan") > 1) {
-                            let colspan = col.slice(col.indexOf("colspan") + 8, col.indexOf("class") - 1);
-                            skip_col = Number(colspan);
-                        }
-                }
-                tbody += `${timetable.schedule[x][y] || '<td></td>'}`; 
-                if (skip_col > 0) {
-                    --skip_col;
-                    tbody = tbody.slice(0, tbody.length - 9);
-                }
-                       
-                }
-                tbody += `</tr>`
-            }
-        return `<table class="table table-bordered table-hover text-center"><thead><tr>${thead}</tr><tbody>${tbody}</tbody></table>`
-    }
-
-    const classes = new Schedule({
-        days: WEEK,
-        hours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
-    })
-    let temp = "";
-    let myObj = "";
-    {% for class in class_list %}
-        temp = "{{ class.daytime|safe }}";
-        temp = temp.replace(/'/gi, '"');
-        myObj = JSON.parse(temp);
-        for (let x in myObj) {
-            if (myObj[x].length > 2) { 
-            start2 = myObj[x][2];
-            increase2 = myObj[x][3] - myObj[x][2];
-            if (increase2 > 1) {
-            min2 = (increase2 % 1 * 60).toFixed();
-            if (min2 == 0) 
-                min2 = "00";
-                classes.addItem(x, start2++, `<td colspan=${Math.ceil(increase2)} class='text-white' style='background-color: ${randomColor}'> {{ class.course.id|safe }} [${myObj[x][2]} - ${Math.floor(myObj[x][3])}:` + min2 + `] </td><td></td>` )
-            } else {
-                classes.addItem(x, start2++, `<td class="text-white" style='background-color: ${randomColor}'> {{ class.course.id|safe }}</td>`);
-            }
-            } 
-            increase = myObj[x][1] - myObj[x][0]
-            randomColor = generate_color();
-            start = myObj[x][0];
-            if (increase > 1) {
-            min = (increase % 1 * 60).toFixed();
-            if (min == 0) 
-                min = "00";
-                classes.addItem(x, start++, `<td colspan=${Math.ceil(increase)} class='text-white' style='background-color: ${randomColor}'> {{ class.course.id|safe }} [${myObj[x][0]} - ${Math.floor(myObj[x][1])}:` + min + `] </td><td></td>` )
-            } else {
-            classes.addItem(x, start++, `<td class="text-white" style='background-color: ${randomColor}'> {{ class.course.id|safe }}</td> <a></a>  `);
-            }
+        const hourIndex = this.hours.indexOf(hour);
+        if (hourIndex < 0) {
+        return;
         }
-    {% endfor %}
 
-    output.innerHTML = generateTable(classes)
+        this.schedule[dayIndex][hourIndex] = item;
+        }
+        }
 
-{% endblock %}
+   function generateTable (timetable) {
+       let thead = '';
+       let tbody = '';
+       let skip_col = 0;
+
+       thead += `<th>Day/Time</th>`
+       for (const hr of timetable.hours) {
+       thead += `<th>${hr} - ${hr}:50</th>`
+       }
+
+       for (let x = 0; x < timetable.days.length; x++) {
+       tbody += `<tr> <td>${timetable.days[x]}</td>`
+           for (let y = 0; y < timetable.hours.length; y++) {
+       col = timetable.schedule[x][y];
+       if (col != undefined) {
+       if (col.indexOf("colspan") > 1) {
+       let colspan = col.slice(col.indexOf("colspan") + 8, col.indexOf("class") - 1);
+       skip_col = Number(colspan);
+       }
+       }
+       tbody += `${timetable.schedule[x][y] || '<td></td>'}`; 
+       if (skip_col > 0) {
+       --skip_col;
+       tbody = tbody.slice(0, tbody.length - 9);
+       }
+
+       }
+       tbody += `</tr>`
+   }
+   return `<table class="table table-bordered table-hover text-center"><thead><tr>${thead}</tr><tbody>${tbody}</tbody></table>`
+       }
+
+       const classes = new Schedule({
+       days: WEEK,
+       hours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+       })
+       let temp = "";
+       let myObj = "";
+       {% for class in class_list %}
+           temp = "{{ class.daytime|safe }}";
+           temp = temp.replace(/'/gi, '"');
+           myObj = JSON.parse(temp);
+           for (let x in myObj) {
+           if (myObj[x].length > 2) { 
+           start2 = myObj[x][2];
+           increase2 = myObj[x][3] - myObj[x][2];
+           if (increase2 > 1) {
+           min2 = (increase2 % 1 * 60).toFixed();
+           if (min2 == 0) 
+           min2 = "00";
+           classes.addItem(x, start2++, `<td colspan=${Math.ceil(increase2)} class='text-white' style='background-color: ${randomColor}'> {{ class.course.id|safe }} [${myObj[x][2]} - ${Math.floor(myObj[x][3])}:` + min2 + `] </td><td></td>` )
+           } else {
+           classes.addItem(x, start2++, `<td class="text-white" style='background-color: ${randomColor}'> {{ class.course.id|safe }}</td>`);
+           }
+           } 
+           increase = myObj[x][1] - myObj[x][0]
+           randomColor = generate_color();
+           start = myObj[x][0];
+           if (increase > 1) {
+           min = (increase % 1 * 60).toFixed();
+           if (min == 0) 
+           min = "00";
+           classes.addItem(x, start++, `<td colspan=${Math.ceil(increase)} class='text-white' style='background-color: ${randomColor}'> {{ class.course.id|safe }} [${myObj[x][0]} - ${Math.floor(myObj[x][1])}:` + min + `] </td><td></td>` )
+           } else {
+           classes.addItem(x, start++, `<td class="text-white" style='background-color: ${randomColor}'> {{ class.course.id|safe }}</td> <a></a>  `);
+           }
+           }
+       {% endfor %}
+
+                                               output.innerHTML = generateTable(classes)
+
+                                           {% endblock %}

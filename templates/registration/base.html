@@ -15,12 +15,46 @@
         </style>
     </head>
     <body>
+  {# Alert #}
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5;">
+            <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <img src="{% static 'images/undraw_collecting_fjjl.svg' %}" width="30px" class="rounded me-2" alt="...">
+                    <strong class="me-auto">{% block status %}<span id="status">Status</span>{% endblock %}</strong>
+                    <small>Message</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {% block alert %} <span id="message">hello there</span> {% endblock %}
+                </div>
+            </div>
+        </div>
+
+
         <div class="container">       
             {% block body %}
             {% endblock %}
         </div>
 
         <script>
+    const option_toast = 
+                {
+                    animation : true,
+                    delay : 2000
+                };
+
+            function Toasty(status, message)
+            {
+                document.getElementById('status').innerHTML = status;
+                document.getElementById('message').innerHTML = message; 
+                var toastHTMLElement = document.getElementById( 'liveToast' ); 
+                console.log(toastHTMLElement)
+                var toastElement = new bootstrap.Toast( toastHTMLElement, option_toast ); 
+                toastElement.show( );
+            }
+
+
+
             {% block script %}
             {% endblock %}
         </script>

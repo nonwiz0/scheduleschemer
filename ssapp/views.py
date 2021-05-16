@@ -31,8 +31,32 @@ class DetailProfile(LoginRequiredMixin, generic.TemplateView):
     def get(self, *args, **kwargs):
         account = Account.objects.filter(user=self.request.user)[0]
         courses = account.enrolled_class.all()
-        context = {"account": account, "courses": courses}
+        register = 0
+        for class_schedule in account.enrolled_class.all():
+            register += class_schedule.course.credits
+        total_courses = Course.objects.count()
+        total_curriculum = Curriculum.objects.count()
+        total_accounts = Account.objects.count()
+        context = {"account": account, "courses": courses, 'register': register, 'majors': Curriculum.objects.all(), 'total_courses': total_courses, 'total_curriculum': total_curriculum, 'total_accounts': total_accounts}
         return render(self.request, self.template_name, context)
+    
+    def post(self, *args, **kwargs):
+        print(self.request.POST)
+        account = Account.objects.filter(user=self.request.user)[0]
+        user = self.request.user
+        fname = self.request.POST['fname']
+        lname = self.request.POST['lname']
+        major = self.request.POST['major']
+        print(fname, lname, major, account, user)
+        if len(fname):
+            user.first_name = fname
+        if len(lname):
+            user.last_name = lname
+        if len(major):
+            account.major = Curriculum.objects.get(pk=major)
+        user.save()
+        account.save()
+        return redirect('ssapp:profile', pk=user)
 
 class UserCurriculum(LoginRequiredMixin, generic.TemplateView):
     login_url = '/accounts/login'
@@ -42,9 +66,27 @@ class UserCurriculum(LoginRequiredMixin, generic.TemplateView):
         account = Account.objects.filter(user=self.request.user)[0]
         ge_courses = account.major.courses.filter(category = 'General Education Courses')
         pro_courses = account.major.courses.exclude(category = 'General Education Courses')
-        context = {"account": account, 'ge_courses': ge_courses, 'pro_courses': pro_courses}
+        other_courses = account.completed_course.filter(category="Professional Courses").exclude(faculty=account.major.faculty)
+        register = 0
+        for class_schedule in account.enrolled_class.all():
+            register += class_schedule.course.credits
+            context = {"account": account, 'ge_courses': ge_courses, 'pro_courses': pro_courses, 'other_courses': other_courses, 'register': register}
         return render(self.request, self.template_name, context)
 
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        if request.is_ajax and request.method == "POST":
+            curr_acc = Account.objects.get(user=request.user)
+            type = request.POST.get('type', 0)
+            if type and type == 'unenroll' and request.POST.get('course_id', 0):
+                course = Course.objects.get(pk=request.POST['course_id'])
+                curr_acc.completed_course.remove(course)
+                curr_acc.save()
+            if type and type == 'complete':
+                course = Course.objects.get(pk=request.POST['course_id'])
+                curr_acc.completed_course.add(course)
+                curr_acc.save()
+        return JsonResponse({"instance": ""}, status=200)
 
 
 
@@ -88,7 +130,6 @@ class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
             if type and type == 'unenroll' and self.request.POST.get('course_id', 0):
                 course = Course.objects.get(pk=self.request.POST['course_id'])
                 curr_acc.enrolled_class.remove(course.class_schedule)
-                curr_acc.completed_course.remove(course)
                 curr_acc.save()
             if type and type == 'enroll':
                 courses = self.request.POST['courses']
@@ -96,10 +137,8 @@ class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
                     courses_list = courses.split(',')
                     for course in courses_list:
                         curr_acc.enrolled_class.add(Course.objects.get(pk=course).class_schedule)
-                        curr_acc.completed_course.add(Course.objects.get(pk=course))
                 else:
                     curr_acc.enrolled_class.add(Course.objects.get(pk=courses).class_schedule)
-                    curr_acc.completed_course.add(Course.objects.get(pk=courses))
                 curr_acc.save()
             return JsonResponse({"instance": ""}, status=200)
 
@@ -182,6 +221,14 @@ def drop_course_from_curriculum(request, curr_id, course_id):
         curr.courses.remove(course)
         curr.save()
         return redirect('ssapp:admin_detail_curriculum', pk=curr_id)
+
+class AdminDashboard(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'ssapp/admin/dashboard.html'
+    login_url = '/accounts/login'
+
+    def get(self, *args, **kwargs):
+        context = {"all_courses": Course.objects.all(), 'all_faculty': Faculty.objects.all()}
+        return render(self.request, self.template_name, context)
 
 
 class AdminCourse(LoginRequiredMixin, generic.CreateView):

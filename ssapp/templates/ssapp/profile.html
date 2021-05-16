@@ -8,28 +8,33 @@
   <div class="container py-2">
       <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5 mb-2">
-          <h1 class="display-5 fw-bold"> {{ request.user.first_name }} {{ request.user.last_name }}</h1>
+      <h1 class="display-5 fw-bold"> {% if request.user.username != "admin" %} {{ request.user.first_name }} {{ request.user.last_name }} {% else %} {{ request.user }} {% endif %}</h1>
 
-            <img class="float-end" src="{% static 'images/undraw_Growing_re_olpi.svg' %}" height="150px">
-            <p class="col-md-6 fs-4 mb-4">Bachelor of {{ account.major }}</p>
+            <img class="float-end" src="{% static 'images/undraw_Growing_re_olpi.svg' %}" height="140px">
+            <p class="col-md-6 fs-4 mb-4">{% if request.user.username != "admin" %}{{ account.major }} {% else %} Registrar Office {% endif %}</p>
       </div>
       </div>
 
     <div class="row align-items-md-stretch">
       <div class="col-md-6">
         <div class="h-100 p-5 text-white bg-dark rounded-3">
+            {% if request.user.username != "admin" %}
           <h2>Study Completion</h2>
           <ul>
-              <li>CGPA: 3.50</li>
-              <li>Accumulated Credits: 92</li>
-              <li>Required Credits: 12</li>
-              <li>Total Required Credits: 104</li>
+              <li>Register Credits: {{ register }}</li>
+              <li>Accumulated Credits: {{ account.earned_credits }}</li>
+              <li>Required Credits: {{ account.major.total_credits }}</li>
           </ul>
-          <button class="btn btn-outline-light mt-2" type="button">Open Curriculum</button>
+          {% else %}
+              <h2>Actions</h2>
+              <p> <a href="{% url 'ssapp:admin_course' %}" class="btn btn-light">Open Courses</a> | <a href="{% url 'ssapp:admin_curriculum' %}" class="btn btn-light">Open Curriculum</a></p>
+
+          {% endif %}
         </div>
       </div>
       <div class="col-md-6">
         <div class="h-100 p-5 bg-light border rounded-3">
+            {% if request.user.username != "admin" %}
           <h2>Enrolled Classes:</h2>
           <ul class="list-group list-unstyled">
               {% for class in courses %}
@@ -40,12 +45,61 @@
                   </li>
               {% endfor %}
             </ul>
-          <a class="btn btn-outline-dark mt-2" href="{% url 'ssapp:course' %}">Modify Classes</a>
+          <a class="btn btn-outline-dark mt-2" href="{% url 'ssapp:course' %}">Open Classes</a>
+          {% else %}
+              <h2>Status:</h2>
+              <li>Total courses: {{ total_courses }}</li>
+              <li>Total curriculum: {{ total_curriculum }}</li>
+              <li>Total accounts: {{ total_accounts }}</li>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="row align-items-md-stretch mt-4">
+      <div class="col-md-6">
+        <div class="h-100 p-5 text-dark bg-light border rounded-3">
+          <h2>Update</h2>
+          <form id="update_profile" method="POST">
+              {% csrf_token %}
+              <div class="row">
+                  <div class="col">
+               <label for="fname">First Name</label>
+               <input type="text" id="fname" value="{{ request.user.firstname }}" name="fname" class="form-control"/>
+                  </div>
+                  <div class="col">
+              <label for="lname">Last Name</label>
+              <input type="text" id="lname" value="{{ request.user.lastname }}" name="lname" class="form-control"/>
+                  </div>
+              </div>
+             {% if request.user.username != "admin" %}   <label for='major'>Major</label>
+             <select id="major" name="major" class="form-control">
+                <option value="{{ account.major.pk }}">---</option>
+                {% for major in majors %}
+                    <option value="{{ major.pk }}"> {{ major.name }}</option>
+                    {% endfor %} 
+            </select>
+            {% endif %}
+            <div class="text-end">
+            <input type="submit" value="Update" class="btn btn-outline-danger my-1" />
+            </div>
+
+          </form>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="h-100 p-5 bg-dark text-light rounded-3">
+            <img src="{% static 'images/undraw_Profile_data_re_v81r.svg' %}" class="img-fluid" />
         </div>
       </div>
     </div>
 
+
   </div>
+
 </main>
+
+    {% endblock %}
+    {% block script %}
+
 
     {% endblock %}
