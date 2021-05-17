@@ -280,7 +280,9 @@ class AdminDashboard(LoginRequiredMixin, generic.TemplateView):
         if action == 'delete_faculty':
             faculty = self.request.POST['faculty']
             if faculty:
-                faculty = Faculty.objects.get(pk=faculty).delete()
+                faculty = Faculty.objects.get(pk=faculty)
+                messages.info(self.request, f"Faculty {faculty} has been deleted successfully")
+                faculty.delete()
         return JsonResponse({"instance": ""}, status=200)
 
 
