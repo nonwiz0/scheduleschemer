@@ -35,7 +35,7 @@
             const option_toast = 
                 {
                     animation : true,
-                    delay : 2000
+                    delay : 5000
                 };
 
             function Toasty(status, message)
@@ -48,7 +48,13 @@
             }
         </script>
 
-
+        {% if messages %}
+            <script>
+                {% for message in messages %}
+                    Toasty("{{ message.tags }}", "{{ message }}");
+                {% endfor %}
+            </script>
+        {% endif %}
         <div class="container">       
             {% block body %}
             {% endblock %}

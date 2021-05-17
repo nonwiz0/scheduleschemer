@@ -8,6 +8,8 @@ from django.http import Http404, JsonResponse
 from picklefield.fields import PickledObjectField
 from django.core import serializers
 import json
+from django.contrib import messages
+
 # Create your views here.
 class Index(generic.ListView):
     template_name = 'ssapp/index.html'
@@ -21,6 +23,8 @@ class Dashboard(LoginRequiredMixin, generic.TemplateView):
         account = Account.objects.filter(user=self.request.user)[0]
         courses = account.enrolled_class.all()
         context = {"account": account, "class_list": courses}
+        if not courses:
+            messages.info(self.request, "Please enroll some courses first to generate the schedule")
         return render(self.request, self.template_name, context)
 
 
@@ -56,6 +60,7 @@ class DetailProfile(LoginRequiredMixin, generic.TemplateView):
             account.major = Curriculum.objects.get(pk=major)
         user.save()
         account.save()
+        messages.info(self.request, "Profile update!")
         return redirect('ssapp:profile', pk=user)
 
 class UserCurriculum(LoginRequiredMixin, generic.TemplateView):
@@ -70,7 +75,7 @@ class UserCurriculum(LoginRequiredMixin, generic.TemplateView):
         register = 0
         for class_schedule in account.enrolled_class.all():
             register += class_schedule.course.credits
-            context = {"account": account, 'ge_courses': ge_courses, 'pro_courses': pro_courses, 'other_courses': other_courses, 'register': register}
+        context = {"account": account, 'ge_courses': ge_courses, 'pro_courses': pro_courses, 'other_courses': other_courses, 'register': register}
         return render(self.request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -81,17 +86,17 @@ class UserCurriculum(LoginRequiredMixin, generic.TemplateView):
             if type and type == 'unenroll' and request.POST.get('course_id', 0):
                 course = Course.objects.get(pk=request.POST['course_id'])
                 curr_acc.completed_course.remove(course)
+                messages.info(request, f"{course.name} is now available to take!")
                 curr_acc.save()
             if type and type == 'complete':
                 course = Course.objects.get(pk=request.POST['course_id'])
                 curr_acc.completed_course.add(course)
                 credits = 0
-                for course in self.completed_course.all():
+                for course in curr_acc.completed_course.all():
                     credits += course.credits
+                messages.info(request, f"{course.name} has been marked completed!")
                 curr_acc.save()
         return JsonResponse({"instance": ""}, status=200)
-
-
 
 class Signup(generic.CreateView):
     model = Account
@@ -101,12 +106,18 @@ class Signup(generic.CreateView):
     def form_valid(self, form):
         self.instance = form.save(commit=False)
         username = form.cleaned_data['username']
-        new_user = User.objects.create_user(username=username, password=form.cleaned_data['password1'], email=form.cleaned_data['email'], first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'])
-        new_user.save()
-        major = Curriculum.objects.filter(name=self.request.POST['major'])[0]
-        new_acc = Account(user=new_user, major=major)
-        new_acc.save()
-        return redirect('ssapp:dashboard')
+        major = Curriculum.objects.filter(name=self.request.POST['major']).exists()
+        if major:
+            new_user = User.objects.create_user(username=username, password=form.cleaned_data['password1'], email=form.cleaned_data['email'], first_name=form.cleaned_data['first_name'], last_name=form.cleaned_data['last_name'])
+            new_user.save()           
+            major = Curriculum.objects.filter(name=self.request.POST['major'])[0]
+            new_acc = Account(user=new_user, major=major)
+            new_acc.save()
+            messages.info(self.request, "Your account has been created successfully, please login!")        
+        else:
+            messages.info(self.request, "Please select an appropriate information")
+            return redirect('ssapp:signup')
+        return redirect('ssapp:course')
 
 class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
     login_url = '/accounts/login'
@@ -134,6 +145,7 @@ class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
                 course = Course.objects.get(pk=self.request.POST['course_id'])
                 curr_acc.enrolled_class.remove(course.class_schedule)
                 curr_acc.save()
+                messages.info(self.request, 'Course unenroll successfully')
             if type and type == 'enroll':
                 courses = self.request.POST['courses']
                 if courses.find(',') > 1:
@@ -142,6 +154,7 @@ class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
                         curr_acc.enrolled_class.add(Course.objects.get(pk=course).class_schedule)
                 else:
                     curr_acc.enrolled_class.add(Course.objects.get(pk=courses).class_schedule)
+                messages.info(self.request, "Course enroll successfully!")
                 curr_acc.save()
             return JsonResponse({"instance": ""}, status=200)
 
@@ -166,6 +179,7 @@ class AdminCurriculum(LoginRequiredMixin, generic.CreateView):
                 if form.is_valid():
                     instance = form.save()
                     ser_instance = serializers.serialize('json', [instance, ])
+                    messages.info(self.request, f"Curriculum has been created successfully")
                     return JsonResponse({"instance": ser_instance}, status=200)
                 else:
                     return JsonResponse({"error": ""}, status=400)
@@ -174,6 +188,7 @@ class AdminCurriculum(LoginRequiredMixin, generic.CreateView):
                 if Curriculum.objects.filter(pk=course_pk).exists():
                     curr = Curriculum.objects.get(pk=course_pk)
                     curr.delete()
+                    messages.info(self.request, f"Curriculum has been deleted successfully")
                 return JsonResponse({"instance": ""}, status=200)
 
 class AdminDetailCurriculum(LoginRequiredMixin, generic.UpdateView):
@@ -215,6 +230,7 @@ def auto_add_ge_courses(request, curr_id):
         for course in ge_courses:
             curr.courses.add(course)
         curr.save()
+        messages.info(request, f"General education courses has been added to ")
         return redirect('ssapp:admin_detail_curriculum', pk=curr_id)
 
 def drop_course_from_curriculum(request, curr_id, course_id):
@@ -223,6 +239,7 @@ def drop_course_from_curriculum(request, curr_id, course_id):
         curr = Curriculum.objects.get(pk=curr_id)
         curr.courses.remove(course)
         curr.save()
+        messages.info(request, f"{course.name} has been removed from {curr.name}")
         return redirect('ssapp:admin_detail_curriculum', pk=curr_id)
 
 class AdminDashboard(LoginRequiredMixin, generic.TemplateView):
@@ -237,6 +254,7 @@ class AdminDashboard(LoginRequiredMixin, generic.TemplateView):
         action = self.request.POST.get('type', '')
         if action == 'delete_course':
             course_id = Course.objects.get(pk=self.request.POST['course_id'])
+            messages.info(self.request, f"{course_id.name} is deleted successfully")
             course_id.delete()
             print(course_id, action)
         if action == 'update_course':
@@ -251,11 +269,13 @@ class AdminDashboard(LoginRequiredMixin, generic.TemplateView):
             if faculty:
                 course_id.faculty.clear()
                 course_id.faculty.add(Faculty.objects.get(pk=faculty))
+            messages.info(self.request, f"Course {course_id.name} has been updated")
             course_id.save()
         if action == 'create_faculty':
             faculty = self.request.POST['faculty']
             if faculty:
                 faculty = Faculty(name=faculty)
+                messages.info(self.request, f"Faculty {faculty.name} has been created")
                 faculty.save()
         if action == 'delete_faculty':
             faculty = self.request.POST['faculty']

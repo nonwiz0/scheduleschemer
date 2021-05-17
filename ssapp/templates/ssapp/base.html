@@ -101,5 +101,13 @@
             {% block script %}
             {% endblock %}
         </script>
+
+        {% if messages %}
+            <script>
+                {% for message in messages %}
+                    Toasty("{{ message.tags }}", "{{ message }}");
+                {% endfor %}
+            </script>
+        {% endif %}
     </body>
 </html>

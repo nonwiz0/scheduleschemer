@@ -21,7 +21,7 @@
         <p class="fs-4">Maximum: 30 Credits</p>
         <div class="table-responsive">
             <table class="table table-hover">
-
+                <input type="hidden" id="csrf" value="{{ csrf_token }}" />
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
@@ -31,7 +31,7 @@
                 {% for course in ge_courses %}
                     {% if course in account.completed_course.all %} 
                         <tr class="bg-success text-white">
-                            <input type="hidden" name='csrf' value='{{ csrf_token }}' />
+                            <input type="hidden" id="csrf" name='csrf' value='{{ csrf_token }}' />
                         {% else %}
                             <tr>
                             {% endif %}
@@ -161,7 +161,7 @@
     const data = {
     'type': "complete",
     'course_id': course_id,
-    'csrfmiddlewaretoken': $('input[name=csrf]').val()
+    'csrfmiddlewaretoken': $('#csrf').val(),
     };
     Toasty("Request Received", `Changing ${course_id} to complete`);
     sendData(data, true);
