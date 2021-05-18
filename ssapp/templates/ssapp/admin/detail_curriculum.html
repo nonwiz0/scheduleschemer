@@ -38,7 +38,7 @@
         <div class="table-responsive">
             <button id="hide" class="btn btn-outline-secondary">Hide GE Courses?</button>
             <button id="show" class="btn btn-outline-secondary">Show GE Courses?</button>
- 
+
             {% if ge_courses %}
                 <table class="table table-hover" id="ge_courses">
                     <thead>
@@ -99,8 +99,8 @@
 {% block script %}
     $('#hide').click(function (e) {
         $("#ge_courses").fadeOut(300);
-
     })
+
     $('#show').click(function (e) {
         $("#ge_courses").fadeIn(300);
     })
@@ -108,24 +108,24 @@
 
 
     $('#add_course').submit(function (e) {
-    let select = $("select").val()
-    console.log(select);
-    $("form").append(`<input type="hidden" name="courses" value=${select} multiple/>`)
-    e.preventDefault();
-    let url_mask = "{% url 'ssapp:admin_detail_curriculum' 12345 %}".replace(/12345/, {{ curriculum.id|safe }}); 
-    var serializedData = $(this).serialize();
-    $.ajax({
-    type: 'POST',
-    url: url_mask,
-    data: serializedData,
-    success: function (response) {
-        location.reload();
-    },
-    error: function(response) {
-    }
+        let select = $("select").val()
+        console.log(select);
+        $("form").append(`<input type="hidden" name="courses" value=${select} multiple/>`)
+        e.preventDefault();
+        let url_mask = "{% url 'ssapp:admin_detail_curriculum' 12345 %}".replace(/12345/, {{ curriculum.id|safe }}); 
+        var serializedData = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: url_mask,
+            data: serializedData,
+            success: function (response) {
+            location.reload();
+            },
+            error: function(response) {
+            }
 
-    })
-    })
+        })
+        })
 
 
 

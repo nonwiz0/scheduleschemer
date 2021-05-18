@@ -129,41 +129,37 @@
 {% endblock %}
 {% block script %}
     const sendData = (data, refresh) => {
-    $.ajax({
-    type: 'POST',
-    url: "{% url 'ssapp:curriculum' %}",
-    data: data,
-    success: function (response) {
-    },
-    error: function(response) {
-    },
-    complete: function() {
-    if (refresh) {
-    setTimeout(() => {location.reload()}, 1500);
-    }
-    }
-    })   
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'ssapp:curriculum' %}",
+            data: data,
+            success: function (response) {
+                if (refresh) {
+                    setTimeout(() => {location.reload()}, 1000);
+                }
+            }
+        })   
     }
 
     $(document).on('click', '[id^=unenroll]', function() {
-    let course_id = $(this).attr('value');
-    const data = {
-    'type': "unenroll",
-    'course_id': course_id,
-    'csrfmiddlewaretoken': $('input[name=csrf]').val()
-    };
-    Toasty("Request Received", `Resetting ${course_id} status`)
-    sendData(data, true);
+        let course_id = $(this).attr('value');
+        const data = {
+            'type': "unenroll",
+            'course_id': course_id,
+            'csrfmiddlewaretoken': $('input[name=csrf]').val()
+        };
+        Toasty("Request Received", `Resetting ${course_id} status`)
+        sendData(data, true);
     })
 
     $(document).on('click', '[id^=complete]', function() {
-    let course_id = $(this).attr('value');
-    const data = {
-    'type': "complete",
-    'course_id': course_id,
-    'csrfmiddlewaretoken': $('#csrf').val(),
-    };
-    Toasty("Request Received", `Changing ${course_id} to complete`);
-    sendData(data, true);
+        let course_id = $(this).attr('value');
+        const data = {
+            'type': "complete",
+            'course_id': course_id,
+            'csrfmiddlewaretoken': $('#csrf').val(),
+        };
+        Toasty("Request Received", `Changing ${course_id} to complete`);
+        sendData(data, true);
     })
 {% endblock %}

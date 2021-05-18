@@ -26,13 +26,13 @@
                     <input type="hidden" value="{{ csrf_token }}" id="csrf" />
                     <div class="row">
                         <div class="col">
-                    <select class="form-control" required id="select_day">
-                        <option value="Mon">Monday</option>
-                        <option value="Tue">Tuesday</option>
-                        <option value="Wed">Wednesday</option>
-                        <option value="Thu">Thursday</option>
-                        <option value="Fri">Friday</option>
-                    </select>
+                            <select class="form-control" required id="select_day">
+                                <option value="Mon">Monday</option>
+                                <option value="Tue">Tuesday</option>
+                                <option value="Wed">Wednesday</option>
+                                <option value="Thu">Thursday</option>
+                                <option value="Fri">Friday</option>
+                            </select>
                         </div>
                         <div class="col">
                             <input value="Reset" id="reset_day_btn" type="button" class="btn btn-outline-light btn-block"></div>
@@ -160,14 +160,12 @@
 {% block script %}
     let tmp = {{ schedule|safe }}
     for (let x in tmp) {
-    if (tmp[x].length == 2) 
-    $("#schedule_list").append(`<li>[${x}]: ${tmp[x][0]} - ${Math.floor(tmp[x][1])}:${Math.ceil(tmp[x][1] % 1 * 60)} </li>`);
+        if (tmp[x].length == 2) 
+        $("#schedule_list").append(`<li>[${x}]: ${tmp[x][0]} - ${Math.floor(tmp[x][1])}:${Math.ceil(tmp[x][1] % 1 * 60)} </li>`);
     else 
-   $("#schedule_list").append(`<li>[${x}]: ${tmp[x][0]} - ${Math.floor(tmp[x][1])}:${Math.ceil(tmp[x][1] % 1 * 60)}, ${tmp[x][2]} - ${Math.floor(tmp[x][1])}:${Math.ceil(tmp[x][3] % 1 * 60)} </li>`);
-      
-    }
+        $("#schedule_list").append(`<li>[${x}]: ${tmp[x][0]} - ${Math.floor(tmp[x][1])}:${Math.ceil(tmp[x][1] % 1 * 60)}, ${tmp[x][2]} - ${Math.floor(tmp[x][1])}:${Math.ceil(tmp[x][3] % 1 * 60)} </li>`);
 
-    console.log("{{ schedule|safe }}");
+    }
 
     $("#reset_day_btn").click(function (e) {
         let day = $("#select_day").val();
@@ -181,55 +179,63 @@
         let url_mask = "{% url 'ssapp:admin_class' 12345 %}".replace(/12345/, name);
         let confirm_reset = confirm(`Reset ${day}day's session?`)
         if (confirm_reset) {
-        Toasty("Reset", "Attempting to reset the class session")
-        $.ajax({
+            Toasty("Reset", "Attempting to reset the class session")
+            $.ajax({
             type: "POST",
             url: url_mask,
             data: data,
             success: function(response) {
-            setTimeout(() => {location.reload()}, 1000);
+                setTimeout(() => {location.reload()}, 1000);
             }
-        })
-        
+            })
+
         }
-     })
+        }
+    )
 
     $('#update_schedule').submit(function (e) {
-    const day = ["Mon", "Tue" , "Wed", "Thu", "Fri"];
-    const hr = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
-    let day1 = $("#day1 option:selected").val(),
-    start1 = Number($("#start1 option:selected").val()),
-    end1 = Number($("#end1 option:selected").val()) + Number((Number($("#end_mins").val())/60).toFixed(2)),
-    day2 = $("#day2 option:selected").val(),
-    start2 = Number($("#start2 option:selected").val()),
-    end2 = Number($("#end2 option:selected").val()) + Number((5/6).toFixed(2)) ;
-    let daytime = {};
-    console.log(day1, start1, end1)
-    if (day.includes(day1) && hr.includes(start1) && end1 > start1 && hr.includes(Math.ceil(end1))) {
-    console.log("Session 1 is completed!");
-    daytime[day1] = [String(start1), String(end1)];
-    }
-    if (day.includes(day2) && hr.includes(start2) && end2 > start2 && hr.includes(Math.ceil(end2))) {
-    console.log("Session 2 is completed!");
-    daytime[day2] = [String(start2), String(end2)];
-    }
-    console.log(daytime);
-    $("#daytime").val(JSON.stringify({'daytime': daytime}));
-    e.preventDefault();
-    var serializedData = $(this).serialize();
-    var name = $('h1').text();
-    let url_mask = "{% url 'ssapp:admin_class' 12345 %}".replace(/12345/, name);
+        const day = ["Mon", "Tue" , "Wed", "Thu", "Fri"];
+        const hr = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+        let day1 = $("#day1 option:selected").val(),
+        start1 = Number($("#start1 option:selected").val()),
+        end1 = Number($("#end1 option:selected").val()) + Number((Number($("#end_mins").val())/60).toFixed(2)),
+        day2 = $("#day2 option:selected").val(),
+        start2 = Number($("#start2 option:selected").val()),
+        end2 = Number($("#end2 option:selected").val()) + Number((5/6).toFixed(2)) ;
+        let daytime = {};
+        let continue_form = true;
+        console.log(day1, start1, end1)
+        console.log(end1 < start1)
+        if (day.includes(day1) && hr.includes(start1) && end1 > start1 && hr.includes(Math.ceil(end1))) {
+            console.log("Session 1 is completed!");
+            daytime[day1] = [String(start1), String(end1)];
+        }
 
-    $.ajax({
-    type: "POST",
-    url: url_mask,
-    data: serializedData,
-    success: function(response) {
-    Toasty("Update initiated", `updating class schedule`);
-        setTimeout(()=>{location.reload()}, 1000)
-    }
-    })
+        if (day.includes(day2) && hr.includes(start2) && end2 > start2 && hr.includes(Math.ceil(end2))) {
+            console.log("Session 2 is completed!");
+            daytime[day2] = [String(start2), String(end2)];
+        } else {
+                Toasty("Warning", "Please enter an appropriate start and end hour")
+        }
+        console.log(daytime);
+        $("#daytime").val(JSON.stringify({'daytime': daytime}));
+        e.preventDefault();
+        var serializedData = $(this).serialize();
+        var name = $('h1').text();
+        let url_mask = "{% url 'ssapp:admin_class' 12345 %}".replace(/12345/, name);
 
-    })
+        $.ajax({
+            type: "POST",
+            url: url_mask,
+            data: serializedData,
+            success: function(response) {
+                Toasty("Update initiated", `Updating class schedule`);
+                $("#update_schedule").trigger("reset");
+                setTimeout(()=>{location.reload()}, 1000)
+            }
+        })
+
+        }
+    )
 
 {% endblock %}

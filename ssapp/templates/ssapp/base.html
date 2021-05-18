@@ -56,7 +56,7 @@
             <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <img src="{% static 'images/undraw_collecting_fjjl.svg' %}" width="30px" class="rounded me-2" alt="...">
-                    <strong class="me-auto">{% block status %}<span id="status">Status</span>{% endblock %}</strong>
+                    <strong class="me-auto">{% block status %}<span id="status" class="text-uppercase">Status</span>{% endblock %}</strong>
                     <small>Message</small>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -74,7 +74,7 @@
         <div class="mt-4">
             <footer class="footer mt-auto py-3 bg-light">
                 <div class="container text-center">
-                    <span class="text-muted"> <a href="mailto:chanrose@pm.me"> Found Bug ? </a> <br />  Andreas - Broset - Bryan - Yilin <br /> Alright reserved 2021</span>
+                    <span class="text-muted"> <a href="mailto:chanrose@pm.me"> Found Bug ? </a> <br />  Andreas - Broset - Bryan - Yilin <br /> Alright reserved 2021 <br /> Special thanks to <br /> Josh, Dan, Abel</span>
                 </div>
             </footer>
         </div>
@@ -106,7 +106,7 @@
             <script>
                 {% for message in messages %}
                     Toasty("{{ message.tags }}", "{{ message }}");
-                {% endfor %}
+            {% endfor %}
             </script>
         {% endif %}
     </body>

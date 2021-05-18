@@ -5,74 +5,73 @@
 {% block html_head %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock %}
-    {% block body %}
-   <div class="container py-2">
-      <div class="p-5 mb-4 bg-light rounded-3">
-      <div class="container-fluid py-5 mb-2">
-        <h1 class="display-5 fw-bold">Curriculum</h1>
-            <img class="float-end" src="{% static 'images/undraw_Booking_re_gw4j.svg' %}" height="150px">
-        <p class="col-md-8 fs-4 mb-4"> Manage Curriculum </p>
-      </div>
-      </div>
+{% block body %}
+    <div class="container py-2">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-5 mb-2">
+                <h1 class="display-5 fw-bold">Curriculum</h1>
+                <img class="float-end" src="{% static 'images/undraw_Booking_re_gw4j.svg' %}" height="150px">
+                <p class="col-md-8 fs-4 mb-4"> Manage Curriculum </p>
+            </div>
+        </div>
 
-      </div>
-      <div class="p-5">
-          <div class="mb-5">
-          <h2 class="display-7 fw-bold">Create Curriculum</h2>
-          <form id="create_curriculum">
-              {% csrf_token %}
-              {{ form }} 
-              <input type="hidden" name="type" value="add" />
-              <input type="submit" class="mt-2 btn btn-outline-primary" value="Create" /> 
-          </form>
-          </div>
-      <h2 class="display-7 fw-bold">List of Curriculum</h2>
-      <table class="table">
-          <thead>
-          <tr>
-              <th>Name</th>
-              <th>Total Credits</th>
-              <th>Faculty</th>
-              <th>Action</th>
-          </tr>
-          </thead>
-          <tbody>
+    </div>
+    <div class="p-5">
+        <div class="mb-5">
+            <h2 class="display-7 fw-bold">Create Curriculum</h2>
+            <form id="create_curriculum">
+                {% csrf_token %}
+                {{ form }} 
+                <input type="hidden" name="type" value="add" />
+                <input type="submit" class="mt-2 btn btn-outline-primary" value="Create" /> 
+            </form>
+        </div>
+        <h2 class="display-7 fw-bold">List of Curriculum</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Total Credits</th>
+                    <th>Faculty</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
                 <input type="hidden" name='csrf' value='{{ csrf_token }}' />
-          {% for curr in all_curr %}
-          <tr>
-              <td><a href="{% url 'ssapp:admin_detail_curriculum' curr.pk %}">{{ curr.name }} </a></td>
-              <td>{{ curr.total_credits }}</td>
-              <td>{{ curr.faculty }}</td>
-              <td> <button type="button" id="delete_{{curr.pk}}" value="{{ curr.pk }}" class="btn btn-link"><i class="bi bi-trash text-danger"></i></button></td>
-          </tr>
-          {% endfor %}
-          </tbody>
-               </table>
-                    
-      </div>
-    
-        {% endblock %}
+                {% for curr in all_curr %}
+                    <tr>
+                        <td><a href="{% url 'ssapp:admin_detail_curriculum' curr.pk %}">{{ curr.name }} </a></td>
+                        <td>{{ curr.total_credits }}</td>
+                        <td>{{ curr.faculty }}</td>
+                        <td> <button type="button" id="delete_{{curr.pk}}" value="{{ curr.pk }}" class="btn btn-link"><i class="bi bi-trash text-danger"></i></button></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-        {% block script %}
-            $('#create_curriculum').submit(function (e) {
-                e.preventDefault();
-                var serializedData = $(this).serialize();
-                $.ajax({
-                    type: 'POST',
-                    url: "{% url 'ssapp:admin_curriculum' %}",
-                    data: serializedData,
-                    success: function (response) {
-                        Toasty("Curriculum", `Creating ${$("#id_name").val()}`);
-                        setTimeout(()=>{location.reload()}, 1500)
-                        },
-                        error: function(response) {
-                         Toasty("Error", `Unable to create ${$("#id_name").val()}`);
-                        setTimeout(()=>{location.reload()}, 1500)
-                            
-                        }
+    </div>
 
-                })
-            })
+{% endblock %}
+
+{% block script %}
+    $('#create_curriculum').submit(function (e) {
+        e.preventDefault();
+        var serializedData = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'ssapp:admin_curriculum' %}",
+            data: serializedData,
+            success: function (response) {
+                Toasty("Curriculum", `Creating ${$("#id_name").val()}`);
+                setTimeout(()=>{location.reload()}, 1500)
+            },
+            error: function(response) {
+                Toasty("Error", `Unable to create ${$("#id_name").val()}`);
+            }
+
+        })
+    })
+
     $(document).on('click', '[id^=delete]', function() {
         console.log("Clicked on delete");
         let curr_id = $(this).attr('value');
@@ -83,19 +82,19 @@
         };
         let confirm_delete = confirm("Do you really want to delete this curriculum?");
         if (confirm_delete) {
-        $.ajax({
-            type: "POST",
-            url: "{% url 'ssapp:admin_curriculum' %}",
-            data: data,
-            success: function (response) {
-                 Toasty("Curriculum", `Deleting curriculum`);
-                setTimeout(()=>{location.reload()}, 1500)
-            }, 
-            error: function(response) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'ssapp:admin_curriculum' %}",
+                data: data,
+                success: function (response) {
+                    Toasty("Curriculum", `Deleting curriculum`);
+                    setTimeout(()=>{location.reload()}, 1500)
+                }, 
+                error: function(response) {
 
-            }
-                    
-        })
+                }
+
+            })
         }
-        })
-        {% endblock %}
+    })
+{% endblock %}

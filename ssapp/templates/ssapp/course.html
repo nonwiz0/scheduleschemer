@@ -1,5 +1,6 @@
 {% extends 'ssapp/base.html' %}
 {% load static %}
+{% block title %} Course {% endblock %}
 {% block html_head %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 {% endblock %}
@@ -21,94 +22,90 @@
         <form id="enroll_course">
             {% csrf_token %}
             <label for="id_courses">Select any available courses to enroll</label>
-             <select class="form-control" multiple id="id_courses" name="courses">
-                  {% for option in available_courses %}
-                      <option value="{{ option.id }}">{{ option }}</option>
-                      {% empty %}
-                          <option>Empty</option>
-                    {% endfor %}
+            <select class="form-control" multiple id="id_courses" name="courses">
+                {% for option in available_courses %}
+                    <option value="{{ option.id }}">{{ option }}</option>
+                {% empty %}
+                    <option>Empty</option>
+                {% endfor %}
 
-              </select>
-              <label for="others">Cannot find it in the list? Type the Course Code here</label>
-              <input type="text" id="others" placeholder="ENGL111" class="my-2 form-control" />
+            </select>
+            <label for="others">Cannot find it in the list? Type the Course Code here</label>
+            <input type="text" id="others" placeholder="ENGL111" class="my-2 form-control" />
             <input type="submit" value="Enroll" placeholder="Others" class="my-2 btn btn-outline-primary" id="enroll">
         </form>
         <h2 class="display-7 fw-bold mt-5" >Enrolled Courses</h2>
         <div class="table-responsive">
-        <table class="table table-hover" id="en_table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th class="text-center">Credits</th>
-                <th class="text-center">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-                <input type="hidden" name='csrf' value='{{ csrf_token }}' />
-            {% for class in courses %}
+            <table class="table table-hover" id="en_table">
+                <thead>
                     <tr>
-                        <td>{{ class.course.id }} </td>
-                        <td>{{ class.course.name }}</td>
-                        <td class="text-center">{{ class.course.credits }}</td>
-                        <td class="text-center"><span>
-                                <button type="button" id="unenroll_{{class.course.id}}" value="{{ class.course.id }}" class="btn btn-link"><i class="bi bi-trash text-danger"></i></button>
-                        </td>
-                   </tr>
-            {% endfor %}
-            <tr>
-                <td colspan="2" class="text-end"> TOTAL: </td>
-                <td class="text-center"><b>{{ total }}</b> </td>
-                <td class="text-center">Credits</td>
-            </tr>
-            </tbody>
-        </table>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th class="text-center">Credits</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <input type="hidden" name='csrf' value='{{ csrf_token }}' />
+                    {% for class in courses %}
+                        <tr>
+                            <td>{{ class.course.id }} </td>
+                            <td>{{ class.course.name }}</td>
+                            <td class="text-center">{{ class.course.credits }}</td>
+                            <td class="text-center"><span>
+                                    <button type="button" id="unenroll_{{class.course.id}}" value="{{ class.course.id }}" class="btn btn-link"><i class="bi bi-trash text-danger"></i></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="2" class="text-end"> TOTAL: </td>
+                        <td class="text-center"><b>{{ total }}</b> </td>
+                        <td class="text-center">Credits</td>
+                    </tr>
+                </tbody>
+            </table>
         </div> 
     </div>
 {% endblock %}
 {% block script %}
     function fetchData() {
     $.ajax({
-    url: "{% url 'ssapp:course' %}",
-    type: 'GET',
-    success: function(data) {
-    en_table = $('#en_table', data).html();
-    if ($("option", data).val() == "Empty") {
-    $("#enroll").prop('disabled', true);
-    }
-    option = $("#id_courses", data).html();
-    $("#id_courses").replaceWith(`
-    <select class="form-control" multiple id="id_courses" name="courses"> ${option} </select>
-    `);
-    $("#en_table").replaceWith(`<table class="table table-hover">${en_table}</table>`);
-    }
-    })
+        url: "{% url 'ssapp:course' %}",
+        type: 'GET',
+        success: function(data) {
+            en_table = $('#en_table', data).html();
+            if ($("option", data).val() == "Empty") {
+                $("#enroll").prop('disabled', true);
+            }
+            option = $("#id_courses", data).html();
+            $("#id_courses").replaceWith(`
+                <select class="form-control" multiple id="id_courses" name="courses"> ${option} </select>
+                `);
+            $("#en_table").replaceWith(`<table class="table table-hover">${en_table}</table>`);
+            }
+        })
     }
 
     const sendData = (data, refresh) => {
-      $.ajax({
-        type: 'POST',
-        url: "{% url 'ssapp:course' %}",
-        data: data,
-        success: function (response) {
-
-        },
-        error: function(response) {
-        },
-        complete: function() {
-        if (refresh) {
-        setTimeout(() => {location.reload()}, 1500);
-        }
-        }
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'ssapp:course' %}",
+            data: data,
+            success: function (response) {
+                if (refresh) {
+                    setTimeout(() => {location.reload()}, 1500);
+                }
+            },
+            error: function(response) {
+            }
         })   
     }
 
     $(document).ready(function() {
-    fetchData();
+        fetchData();
     })
 
     $(document).on('click', '[id^=unenroll]', function() {
-        console.log("Clicked on unenroll");
         let course_id = $(this).attr('value');
         const data = {
             'type': "unenroll",
@@ -117,24 +114,24 @@
         };
         Toasty("Request Received", `Attempting to unenroll ${course_id}`);
         sendData(data, true);
-        })
-    $('#enroll_course').submit(function (e) {
-    let select = $("select").val();
-    let others = $("#others").val();
-    if (others != undefined && others != "") {
-        select.push(others);
-    }
-    console.log(select);
-    $("form").append(`
-    <input type="hidden" name="courses" value=${select} /> 
-    <input type="hidden" name="type" value="enroll" />
-    `);
-    e.preventDefault();
-    var serializedData = $(this).serialize();
-    sendData(serializedData, true);
-    $("form").trigger('reset');
-    Toasty("Request Received", `Attempting to enroll ${select}`);
+        }
+    )
 
-   })
+    $('#enroll_course').submit(function (e) {
+        let select = $("select").val();
+        let others = $("#others").val();
+        if (others != undefined && others != "") {
+            select.push(others);
+        }
+        $("form").append(`
+            <input type="hidden" name="courses" value=${select} /> 
+            <input type="hidden" name="type" value="enroll" />
+        `);
+        e.preventDefault();
+        var serializedData = $(this).serialize();
+        sendData(serializedData, true);
+        $("form").trigger('reset');
+        Toasty("Request Received", `Attempting to enroll ${select}`);
+    })
 
 {% endblock %}

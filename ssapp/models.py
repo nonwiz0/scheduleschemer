@@ -18,7 +18,7 @@ class Curriculum(models.Model):
         return "{}".format(self.name)
 
 class Account(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='account')
     major = models.ForeignKey(Curriculum, on_delete=models.CASCADE, related_name='major', null=False)
     enrolled_class = models.ManyToManyField('ClassSchedule', blank=True, related_name="enrolled_class") 
     completed_course = models.ManyToManyField('Course', blank=True, related_name="completed_courses") 
