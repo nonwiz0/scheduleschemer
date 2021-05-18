@@ -8,7 +8,7 @@ urlpatterns = [
     path('dashboard', views.Dashboard.as_view(), name='dashboard'),
     path('curriculum', views.UserCurriculum.as_view(), name='curriculum'),
     path('course', views.UserEnrollCourse.as_view(), name='course'),
-    path('<str:pk>/profile', views.DetailProfile.as_view(), name='profile'),
+    path('ssapp/<str:pk>/profile', views.DetailProfile.as_view(), name='profile'),
     path('signup', views.Signup.as_view(), name='signup'),
 #    path('curriculum/unenroll', views.unenroll_course_from_curriculum, name="unenroll_course"),
 
