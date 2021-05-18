@@ -21,3 +21,5 @@ urlpatterns = [
     path('', include('ssapp.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
 ]
+
+handler404 = 'ssapp.views.RedirectIndex'

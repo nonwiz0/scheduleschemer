@@ -20,6 +20,7 @@
         <h2 class="display-7 fw-bold"> Enroll Courses </h2>
         <form id="enroll_course">
             {% csrf_token %}
+            <label for="id_courses">Select any available courses to enroll</label>
              <select class="form-control" multiple id="id_courses" name="courses">
                   {% for option in available_courses %}
                       <option value="{{ option.id }}">{{ option }}</option>
@@ -28,7 +29,8 @@
                     {% endfor %}
 
               </select>
-              <input type="text" id="others" placeholder="Course ID" class="my-2 form-control" />
+              <label for="others">Cannot find it in the list? Type the Course Code here</label>
+              <input type="text" id="others" placeholder="ENGL111" class="my-2 form-control" />
             <input type="submit" value="Enroll" placeholder="Others" class="my-2 btn btn-outline-primary" id="enroll">
         </form>
         <h2 class="display-7 fw-bold mt-5" >Enrolled Courses</h2>

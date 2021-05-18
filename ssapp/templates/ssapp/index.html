@@ -3,17 +3,98 @@
 {% block header_home %} <span class="text-muted"> Home </span> {% endblock %}
 
 {% block body %}
-       <div class="container py-2">
-      <div class="p-5 mb-4 bg-light rounded-3">
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold mb-2">Schedule Schemer</h1>
-            <img class="float-end" src="{% static 'images/undraw_at_home_octe.svg' %}" height="150px">
-        <p class="col-md-8 fs-4 mb-4"> Generate your schedule at ease </p>
-      </div>
+    <div class="container py-2">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold mb-2">Schedule Schemer</h1>
+                <img class="float-end" src="{% static 'images/undraw_at_home_octe.svg' %}" height="150px">
+                <p class="col-md-8 fs-4 mb-4"> A place where you get your auto-generated schedule and keeping track of your school curriculum </p>
+            </div>
 
-      </div>
+        </div>
 
-      </div>
+    </div>
+   <div class="container py-2 mt-1 mb-4 bg-light">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-1">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img src="{% static 'images/class_schedule.png' %}" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="display-6 fw-bold lh-1 mb-3">Students and Administrator</h2>
+                <p class="lead"> Two accesses, one for students to enroll/unenroll courses and administrators for managing the courses, curriculum, and faculty.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a class="btn btn-outline-primary btn-lg px-4" href="{% url 'ssapp:signup' %}">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div class="container py-2 my-5 bg-dark text-white">
+        <div class="row flex-lg-row align-items-center g-5 py-1">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img src="{% static 'images/user_curriculum.png' %}" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="display-6 fw-bold lh-1 mb-3">Curriculum Tracker</h2>
+                <p class="lead">Keep track of your curriculum easily with just one click away. </p>
+            </div>
+        </div>
+    </div>
+    <div class="container py-2">
+        <div class="row">
+
+            <div class="col">
+
+                <h2 class="display-6 fw-bold lh-1 mb-3">Frequently Asked Questions</h2>
+                <p class="lead">Want to know more? </p>
+                <a href="mailto:chanrose@pm.me" class="btn btn-outline-secondary btn-lg px-4">Email</a>
+            </div>
+            <div class="col">
+
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                How does the schedule schemer work?
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">After the students signed up, the students can check enroll any available course that is created by the administrator. After the administrators create the schedule for the class, the students will be able to see it on the Schedule page.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                How do I change the color of courses? 
+                            </button>
+                        </h2>
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">The system doesn't provide easy way to change the class schedule yet, but with enough support, we will.</div>   </div>
+                    </div>
+                     <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                Any future features?
+                            </button>
+                        </h2>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">There are tons of feature that we would like to implement, as long as we have a lot of support for this, we will implement it.</div> </div>
+                    </div>
+                  <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFourth" aria-expanded="false" aria-controls="flush-collapseFourth">
+                                Can I delete my account when I don't need anymore?
+                            </button>
+                        </h2>
+                        <div id="flush-collapseFourth" class="accordion-collapse collapse" aria-labelledby="flush-headingFourth" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">Yes, we respect your privacy, we will implement it in the future update</div> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
 
 {% endblock %}
 

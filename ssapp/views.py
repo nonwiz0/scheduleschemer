@@ -11,9 +11,13 @@ import json
 from django.contrib import messages
 
 # Create your views here.
-class Index(generic.ListView):
+def RedirectIndex(request, exception):
+    template_name = 'ssapp/index.html' 
+    messages.warning(request, "Request page is not found!")
+    return render(request, template_name, {})
+ 
+class Index(generic.TemplateView):
     template_name = 'ssapp/index.html'
-    model = Account
 
 class Dashboard(LoginRequiredMixin, generic.TemplateView):
     login_url = '/accounts/login'
@@ -115,7 +119,7 @@ class Signup(generic.CreateView):
             new_acc.save()
             messages.info(self.request, "Your account has been created successfully, please login!")        
         else:
-            messages.info(self.request, "Please select an appropriate information")
+            messages.warning(self.request, "Please select an appropriate information")
             return redirect('ssapp:signup')
         return redirect('ssapp:course')
 
@@ -145,7 +149,7 @@ class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
                 course = Course.objects.get(pk=self.request.POST['course_id'])
                 curr_acc.enrolled_class.remove(course.class_schedule)
                 curr_acc.save()
-                messages.info(self.request, 'Course unenroll successfully')
+                messages.info(self.request, f'Course {course.id} is unenroll successfully')
             if type and type == 'enroll':
                 courses = self.request.POST['courses']
                 if courses.find(',') > 1:
@@ -154,7 +158,7 @@ class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
                         curr_acc.enrolled_class.add(Course.objects.get(pk=course).class_schedule)
                 else:
                     curr_acc.enrolled_class.add(Course.objects.get(pk=courses).class_schedule)
-                messages.info(self.request, "Course enroll successfully!")
+                messages.success(self.request, f"Course {courses} is enrolled successfully!")
                 curr_acc.save()
             return JsonResponse({"instance": ""}, status=200)
 
@@ -166,12 +170,17 @@ class AdminCurriculum(LoginRequiredMixin, generic.CreateView):
     template_name = 'ssapp/admin/curriculum.html'
 
     def get(self, *args, **kwargs):
+        if self.request.user.username != "admin":
+            messages.warning(self.request, "You do not have admin capability")
+            return redirect('ssapp:dashboard')
         all_curr = Curriculum.objects.all()
         form = self.form_class()
         context = {"all_curr": all_curr, "form": form}
         return render(self.request, self.template_name, context)
 
     def post(self, *args, **kwargs):
+        if self.request.user.username != "admin":
+            messages.warning(self.request, "You do not have admin capability")
         if self.request.is_ajax and self.request.method == "POST":
             action = self.request.POST['type']
             if action == 'add':
@@ -179,7 +188,7 @@ class AdminCurriculum(LoginRequiredMixin, generic.CreateView):
                 if form.is_valid():
                     instance = form.save()
                     ser_instance = serializers.serialize('json', [instance, ])
-                    messages.info(self.request, f"Curriculum has been created successfully")
+                    messages.info(self.request, f"Curriculum {self.request.POST['name']} has been created successfully")
                     return JsonResponse({"instance": ser_instance}, status=200)
                 else:
                     return JsonResponse({"error": ""}, status=400)
@@ -187,8 +196,8 @@ class AdminCurriculum(LoginRequiredMixin, generic.CreateView):
                 course_pk = self.request.POST['curr_pk']
                 if Curriculum.objects.filter(pk=course_pk).exists():
                     curr = Curriculum.objects.get(pk=course_pk)
+                    messages.info(self.request, f"Curriculum {curr.name} has been deleted successfully")
                     curr.delete()
-                    messages.info(self.request, f"Curriculum has been deleted successfully")
                 return JsonResponse({"instance": ""}, status=200)
 
 class AdminDetailCurriculum(LoginRequiredMixin, generic.UpdateView):
@@ -197,6 +206,9 @@ class AdminDetailCurriculum(LoginRequiredMixin, generic.UpdateView):
     form_class = UpdateCurriculumForm
 
     def get(self, *args, **kwargs):
+        if self.request.user.username != "admin":
+            messages.warning(self.request, "You do not have admin capability")
+            return redirect('ssapp:dashboard')
         curr_curriculum = Curriculum.objects.filter(pk=self.kwargs['pk'])[0]
         courses = curr_curriculum.courses.all()
         ge_courses = curr_curriculum.courses.filter(category = 'General Education Courses')
@@ -207,6 +219,8 @@ class AdminDetailCurriculum(LoginRequiredMixin, generic.UpdateView):
         return render(self.request, self.template_name, context)
     
     def post(self, *args, **kwargs):
+        if self.request.user.username != "admin":
+            messages.warning(self.request, "You do not have admin capability")
         if self.request.is_ajax and self.request.method == "POST":
             form = self.form_class(self.request.POST)
             curr = Curriculum.objects.filter(pk=self.kwargs['pk'])[0]
@@ -247,6 +261,9 @@ class AdminDashboard(LoginRequiredMixin, generic.TemplateView):
     login_url = '/accounts/login'
 
     def get(self, *args, **kwargs):
+        if self.request.user.username != "admin":
+            messages.warning(self.request, "You do not have admin capability")
+            return redirect('ssapp:dashboard')
         context = {"all_courses": Course.objects.all(), 'all_faculty': Faculty.objects.all()}
         return render(self.request, self.template_name, context)
 
@@ -292,6 +309,9 @@ class AdminCourse(LoginRequiredMixin, generic.CreateView):
     form_class = CourseForm
 
     def get(self, *args, **kwargs):
+        if self.request.user.username != "admin":
+            messages.warning(self.request, "You do not have admin capability")
+            return redirect('ssapp:dashboard') 
         form = self.form_class()
         context = {"all_courses": Course.objects.all(), "form": form}
         return render(self.request, self.template_name, context)
@@ -315,6 +335,9 @@ class AdminDetailCourse(LoginRequiredMixin, generic.DetailView):
     template_name = 'ssapp/admin/class.html'
 
     def get(self, *args, **kwargs):
+        if self.request.user.username != "admin":
+            messages.warning(self.request, "You do not have admin capability")
+            return redirect('ssapp:dashboard') 
         course_id = Course.objects.filter(pk=self.kwargs['pk'])[0]
         print(course_id) 
         schedule = ClassSchedule.objects.filter(course=course_id)
