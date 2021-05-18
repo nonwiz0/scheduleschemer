@@ -35,7 +35,7 @@
                     </select>
                         </div>
                         <div class="col">
-                            <input type="submit" value="Reset" class="btn btn-outline-light"></div>
+                            <input value="Reset" id="reset_day_btn" type="button" class="btn btn-outline-light btn-block"></div>
                     </div>
                 </form>
             </div>
@@ -169,7 +169,7 @@
 
     console.log("{{ schedule|safe }}");
 
-    $("#reset_day").submit(function (e) {
+    $("#reset_day_btn").click(function (e) {
         let day = $("#select_day").val();
         let csrf = $("#csrf").val();
         let data = {
@@ -179,14 +179,19 @@
         }
         let name = $('h1').text(); 
         let url_mask = "{% url 'ssapp:admin_class' 12345 %}".replace(/12345/, name);
+        let confirm_reset = confirm(`Reset ${day}day's session?`)
+        if (confirm_reset) {
+        Toasty("Reset", "Attempting to reset the class session")
         $.ajax({
             type: "POST",
             url: url_mask,
             data: data,
             success: function(response) {
-            setTimeout(() => {location.reload()}, 1500);
+            setTimeout(() => {location.reload()}, 1000);
             }
         })
+        
+        }
      })
 
     $('#update_schedule').submit(function (e) {
@@ -221,7 +226,7 @@
     data: serializedData,
     success: function(response) {
     Toasty("Update initiated", `updating class schedule`);
-        setTimeout(()=>{location.reload()}, 1700)
+        setTimeout(()=>{location.reload()}, 1000)
     }
     })
 

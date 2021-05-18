@@ -370,11 +370,13 @@ class AdminDetailCourse(LoginRequiredMixin, generic.DetailView):
                         prev_class.daytime[day].append(session[day][1])
                     else:
                         prev_class.daytime[day] = session[day]
+                messages.success(self.request, f"{course_id.id} schedule is updated successfully.")
                 prev_class.save()
         else:
             day = self.request.POST.get('day', '')
             curr_class = course_id.class_schedule
             curr_class.daytime.pop(day)
+            messages.warning(self.request, f"{course_id.id} {day}day's session is reset successfully.")
             curr_class.save()
         return JsonResponse({"instance": ""}, status=200)
 
