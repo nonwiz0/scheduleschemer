@@ -58,7 +58,7 @@
     <div class="row align-items-md-stretch mt-4">
       <div class="col-md-6">
         <div class="h-100 p-5 text-dark bg-light border rounded-3">
-          <h2>Update</h2>
+         {% if request.user.username != "admin" %}     <h2>Update</h2>
           <form id="update_profile" method="POST">
               {% csrf_token %}
               <div class="row">
@@ -71,19 +71,24 @@
               <input type="text" id="lname" value="{{ request.user.lastname }}" name="lname" class="form-control"/>
                   </div>
               </div>
-             {% if request.user.username != "admin" %}   <label for='major'>Major</label>
+            <label for='major'>Major</label>
              <select id="major" name="major" class="form-control">
                 <option value="{{ account.major.pk }}">---</option>
                 {% for major in majors %}
                     <option value="{{ major.pk }}"> {{ major.name }}</option>
                     {% endfor %} 
             </select>
-            {% endif %}
             <div class="text-end">
             <input type="submit" value="Update" class="btn btn-outline-danger my-1" />
             </div>
 
           </form>
+          {% else %}
+              <h2>Update</h2>
+              <p>Update is not available for admin</p>
+
+            {% endif %}
+
         </div>
       </div>
       <div class="col-md-6">
