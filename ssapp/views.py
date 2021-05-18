@@ -162,7 +162,6 @@ class UserEnrollCourse(LoginRequiredMixin, generic.UpdateView):
                 curr_acc.save()
             return JsonResponse({"instance": ""}, status=200)
 
-
 # Admin site
 class AdminCurriculum(LoginRequiredMixin, generic.CreateView):
     login_url = '/accounts/login'

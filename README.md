@@ -4,7 +4,7 @@
 - ~~Notification~~
 - ~~Work on the curriculum~~
 - ~~Course completion~~
-- Check the authorization
+- ~~Check the authorization~~
 - ~~Add the message~~
 - ~~Fix multiple schedule, maybe add more to the array? [a, b, a1, b1]~~ Yup!
 
