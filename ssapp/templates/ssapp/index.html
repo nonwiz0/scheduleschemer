@@ -3,60 +3,128 @@
 {% block header_home %} <span class="text-muted"> Home </span> {% endblock %}
 
 {% block body %}
-    <div class="container py-2">
-        <div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container bg-light py-2 rounded-3">
+        <div class="p-5">
             <div class="container-fluid py-5">
-                <h1 class="display-5 fw-bold mb-2">Schedule Schemer</h1>
-                <img class="float-end pl-2" src="{% static 'images/undraw_at_home_octe.svg' %}" height="150px">
-                <p class="col-md-8 fs-4 mb-4"> A place where you get your auto-generated schedule and keeping track of your school curriculum </p>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h1 class="display-5 fw-bold mb-2">Schedule Schemer</h1>
+                        <p class="col-md-8 fs-4 mb-4"> A place where you get your auto-generated schedule and keeping track of your school curriculum </p>
+                    </div>
+                    <div class="col-lg-4">
+                        <img class="img-fluid mt-5" src="{% static 'images/undraw_at_home_octe.svg' %}" width="400" height="350">
+                    </div>
+                </div>
             </div>
 
         </div>
 
     </div>
-    <div class="container py-2 bg-dark text-white text-center p-5 rounded-3 py-5">
-<div class="row">
-        <div class="col-lg-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-calendar4-range" viewBox="0 0 16 16">
-                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"></path>
-                <path d="M9 7.5a.5.5 0 0 1 .5-.5H15v2H9.5a.5.5 0 0 1-.5-.5v-1zm-2 3v1a.5.5 0 0 1-.5.5H1v-2h5.5a.5.5 0 0 1 .5.5z"></path>
-            </svg>
-            <p>  </p>
-            <p>Develop a module <br>to generate class schedules.</p>
-        </div>
-        <div class="col-lg-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="40" fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
-                <path d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z"></path>
-                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"></path>
-            </svg>
-            <p>  </p>
-            <p>Allow students <br>to manage their curriculum.</p>
-        </div>
-        <div class="col-lg-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="40" fill="currentColor" class="bi bi-person-badge" viewBox="0 0 16 16">
-                <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>
-                <path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0h-7zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492V2.5z"></path>
-            </svg>
-            <p> </p>
-            <p>Allow backends admin <br>to manage curriculum deatils.</p>
-        </div>
-    </div>
-    </div>
-   <div class="container py-2 mt-1 mb-4 bg-light">
-        <div class="row flex-lg-row-reverse align-items-center g-5 py-1">
-            <div class="col-10 col-sm-8 col-lg-6">
-                <img src="{% static 'images/class_schedule.png' %}" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+    <div class="container py-2 text-white text-center bg-dark rounded-3 mb-5">
+        <div class="row container-fluid py-4">
+            <div class="col-lg-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="40" fill="currentColor" class="bi bi-phone" viewBox="0 0 16 16">
+                    <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z"/>
+                    <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                </svg>
+                <p class="mt-3">Mobile Responsive <br/> Run on any platform </p>
             </div>
-            <div class="col-lg-6">
-                <h2 class="display-6 fw-bold lh-1 mb-3">Students and Administrator</h2>
-                <p class="lead"> Two accesses, one for students to enroll/unenroll courses and administrators for managing the courses, curriculum, and faculty.</p>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                    <a class="btn btn-outline-primary btn-lg px-4" href="{% url 'ssapp:signup' %}">Get Started</a>
+            <div class="col-lg-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="40" fill="currentColor" class="bi bi-menu-button-wide-fill" viewBox="0 0 16 16">
+                    <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v2A1.5 1.5 0 0 0 1.5 5h13A1.5 1.5 0 0 0 16 3.5v-2A1.5 1.5 0 0 0 14.5 0h-13zm1 2h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1zm9.927.427A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0l-.396-.396zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                <p class="mt-3"> UI <br/> Simple and Easy to use</p>
+            </div>
+            <div class="col-lg-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="40" fill="currentColor" class="bi bi-person-badge" viewBox="0 0 16 16">
+                    <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>
+                    <path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0h-7zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492V2.5z"></path>
+                </svg>
+                <p class="mt-3"> Privacy <br /> Allow for anonymous signup </p>
+            </div>
+        </div>
+    </div>
+    <div class="container py-2 bg-light">
+        <div class="p-5 mb-4 rounded-3">
+            <div class="container-fluid py-5">
+                <div class="row flex-lg-row-reverse align-items-center">
+                    <div class="col">
+                        <h2 class="display-6 fw-bold lh-1"> General Objective</h2>
+                        <p class="lead"> To generate a student's semester’s schedule upon request. </p>
+                    </div>
+                    <div class="col text-center">
+                        <img class="img-fluid" src="{% static 'images/undraw_selection_re_ycpo.svg' %}" alt="General objective illustration" width="300" height="500"  />
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-      <div class="container py-2 my-5 bg-dark text-white">
+    <div class="container mb-5 mt-1">
+        <div class="row flex-lg-row-reverse">
+            <div class="col-lg-4 bg-light text-center p-5 rounded-3 py-5">
+                <h2 class="display-6 fw-bold mt-4">Specific Objects</h2>
+            </div>
+            <div class="col-lg-8 bg-dark text-white text-center p-5 rounded-3 py-5">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-calendar4-range" viewBox="0 0 16 16">
+                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"></path>
+                            <path d="M9 7.5a.5.5 0 0 1 .5-.5H15v2H9.5a.5.5 0 0 1-.5-.5v-1zm-2 3v1a.5.5 0 0 1-.5.5H1v-2h5.5a.5.5 0 0 1 .5.5z"></path>
+                        </svg>
+                        <p>  </p>
+                        <p>Develop a module <br>to generate class schedules.</p>
+                    </div>
+                    <div class="col-lg-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-calendar4-range" viewBox="0 0 16 16">
+                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"></path>
+                            <path d="M9 7.5a.5.5 0 0 1 .5-.5H15v2H9.5a.5.5 0 0 1-.5-.5v-1zm-2 3v1a.5.5 0 0 1-.5.5H1v-2h5.5a.5.5 0 0 1 .5.5z"></path>
+                        </svg>
+                        <p>  </p>
+                        <p>Develop a module <br>to generate class schedules.</p>
+                    </div>
+                    <div class="col-lg-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="40" fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
+                            <path d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z"></path>
+                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"></path>
+                        </svg>
+                        <p>  </p>
+                        <p>Allow students <br>to manage their curriculum.</p>
+                    </div>
+                    <div class="col-lg-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="40" fill="currentColor" class="bi bi-person-badge" viewBox="0 0 16 16">
+                            <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>
+                            <path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0h-7zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492V2.5z"></path>
+                        </svg>
+                        <p> </p>
+                        <p>Allow backends admin <br>to manage curriculum details.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5 py-2">
+        <div class="container-fluid p-5 bg-light rounded-3">
+            <div class="row flex-lg-row align-items-center">
+                <div class="col-lg-4"> 
+                    <h2 class="display-6 fw-bold">Class Diagram</h2>
+                    <ul>
+                        <li>User</li>
+                        <li>Account</li>
+                        <li>Faculty</li>
+                        <li>Curriculum</li>
+                        <li>Course</li>
+                        <li>ClassSchedule</li>
+                    </ul>
+                </div>
+                <div class="col-lg-8">
+                    <div class="text-center">
+                        <img class="img-fluid rounded" alt="class diagram photo" width="500px" src="{% static 'images/schedule_schemer_model.svg' %}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="container py-2 my-5 bg-dark text-white rounded-3">
         <div class="row flex-lg-row align-items-center g-5 py-1">
             <div class="col-10 col-sm-8 col-lg-6">
                 <img src="{% static 'images/user_curriculum.png' %}" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
@@ -67,9 +135,24 @@
             </div>
         </div>
     </div>
-    <div class="container py-2">
-        <div class="row">
 
+    <div class="container py-2 my-5 bg-light rounded-3">
+        <div class="container-fluid row p-4 flex-lg-row-reverse align-items-center g-5">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img src="{% static 'images/class_schedule.png' %}" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="display-6 fw-bold lh-1 ">Students and Administrator</h2>
+                <p class="lead"> Two accesses, one for students to enroll/unenroll courses and administrators for managing the courses, curriculum, and faculty.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a class="btn btn-outline-primary btn-lg px-4" href="{% url 'ssapp:signup' %}">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+       <div class="container py-2 bg-light rounded-5">
+        <div class="container-fluid p-5">
+            <div class="row flex-lg-row align-items-center ">
             <div class="col">
 
                 <h2 class="display-6 fw-bold lh-1 mb-3">Frequently Asked Questions</h2>
@@ -98,7 +181,7 @@
                         <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">The system doesn't provide easy way to change the class schedule yet, but with enough support, we will.</div>   </div>
                     </div>
-                     <div class="accordion-item">
+                    <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingThree">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
                                 Any future features?
@@ -107,7 +190,7 @@
                         <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">There are tons of feature that we would like to implement, as long as we have a lot of support for this, we will implement it.</div> </div>
                     </div>
-                  <div class="accordion-item">
+                    <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingThree">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFourth" aria-expanded="false" aria-controls="flush-collapseFourth">
                                 Can I delete my account when I don't need anymore?
@@ -118,29 +201,206 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
-        <div class="container py-3 my-2 bg-dark text-white">
-            <div class="py-2">
-            <h2 class="display-6 fw-bold lh-1 mb-3 my-3 text-center">Functionality</h2>
-            <div class="row">
+    </div>
+    <div class="container py-2 bg-dark rounded-3">
+        <div class="container-fluid p-5 text-white ">
+            <div class="row flex-lg-row align-items-center">
                 <div class="col">
-                    <div class="embed-responsive">
-                    <iframe width="400" height="230" src="https://www.youtube-nocookie.com/embed/Tt-nJcI6IGA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-                </div>
+                 <iframe src="https://www.youtube-nocookie.com/embed/Tt-nJcI6IGA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
                 <div class="col">
-                    <div class="embed-responsive">
-<iframe width="400" height="230" src="https://www.youtube-nocookie.com/embed/8vue3-S_lwQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
+                    <h2 class="display-6 fw-bold">Showcase #1</h2>
                 </div>
-                <div class="col"><iframe width="400" height="230" src="https://www.youtube-nocookie.com/embed/nBaByT-D_ys" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container py-2 bg-light rounded-3">
+        <div class="container-fluid p-5">
+            <div class="row flex-lg-row align-items-center">
+                <div class="col">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tr><th>Name</th>
+                                <td>Create Course</td>
+                                <td>Update Course</td>
+                                <td>Delete Course</td>
+                            </tr> 
+                            <tr>
+                                <th>Actor</th>
+                                <td colspan="3">Admin</td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td colspan="3">Describe processes of creating, deleting, and updating course</td>
+                            </tr>
+                            <tr>
+                                <th>Successful Completion</th>
+                                <td>Open Courses > Enter the information > Press Create</td>
+                                <td>Open Dashboard > Select the course > Enter the new information > Press Update</td>
+                                <td>Open Dashboard > Select course > Press delete</td>
+                            </tr>
+                            <tr>
+                                <th>Alternative</th>
+                                <td colspan="3">None</td>
+                            </tr>
+                             <tr>
+                                <th>Precondition</th>
+                                <td colspan="3">The logged in user must be administrator account</td>
+                            </tr><tr>
+                                <th>Post condition</th>
+                                <td>Create course will refresh a page and show a new course</td>
+                                <td>Update course will refresh a page and show the new update information about existing course that had been changed</td>
+                                <td>Delete course will remove the specific course</td>
+                            </tr>
+                        </table></div>
+                </div>
+            </div></div>
+    </div>
+        <div class="container py-2 bg-dark rounded-3">
+        <div class="container-fluid p-5 text-white ">
+            <div class="row flex-lg-row align-items-center">
+                <div class="col">
+                    <iframe src="https://www.youtube-nocookie.com/embed/8vue3-S_lwQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                    <div class="col">
+                    <h2 class="display-6 fw-bold">Showcase #2</h2>
                 </div>
             </div>
 
+            </div>
         </div>
+    </div>
+    <div class="container py-2 bg-light rounded-3">
+        <div class="container-fluid p-5">
+            <div class="row flex-lg-row align-items-center">
+                <div class="col">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tr><th>Name</th>
+                                <td>Create Curriculum</td>
+                                <td>Update Curriculum</td>
+                                <td>Delete Curriculum</td>
+                                <td>Create Faculty</td>
+                                <td>Delete Faculty</td>
+                            </tr>
+                            <tr>
+                                <th>Actor</th>
+                                <td colspan="5">Admin</td>
+
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td colspan="3">Describe processes of creating, deleting, and updating curriculum</td>
+                                <td colspan="2">Describe the processes of creating / deleting faculty </td>
+                            </tr>
+                            <tr>
+                                <th>Successful Completion</th>
+                                <td>Open Curriculum > Enter the information > Press Create</td>
+                                <td>Open Curriculum > Select the curriculum > Enter the new information > Press Update</td>
+                                <td>Open Curriculum > Select the curriculum > Press delete</td>
+                                <td>Open Dashboard > Enter the faculty name > Press Create</td>
+                                <td>Open Dashboard > Select the faculty name > Press Delete</td>
+
+                            </tr>
+                            <tr>
+                                <th>Alternative</th>
+                                <td colspan="5">None</td>
+                            </tr>
+                             <tr>
+                                <th>Precondition</th>
+                                <td colspan="5">The logged in user must be administrator account</td>
+                            </tr><tr>
+                                <th>Post condition</th>
+                                <td>Create curriculum will refresh a page and show a new curriculum</td>
+                                <td>Update curriculum will show the new update information about existing list </td>
+                                <td>Delete curriculum will remove the selected curriculum from existing list </td>
+                                <td>Create faculty will refresh a page and show a new faculty</td>
+                                <td>Delete faculty will remove the selected faculty from existing list</td>
+                            </tr>
+                        </table></div>
+                </div>
+            </div></div>
+    </div>
+
+    <div class="container py-2 bg-dark rounded-3">
+        <div class="container-fluid p-5 text-white ">
+            <div class="row flex-lg-row align-items-center">
+                <div class="col">
+                    <iframe src="https://www.youtube-nocookie.com/embed/nBaByT-D_ys" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+
+                    <div class="col">
+                    <h2 class="display-6 fw-bold">Showcase #3</h2>
+                </div>
+            </div>
+
+            </div>
         </div>
+    </div>
+    <div class="container py-2 bg-light rounded-3">
+        <div class="container-fluid p-5">
+            <div class="row flex-lg-row align-items-center">
+                <div class="col">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tr><th>Name</th>
+                                <td>Update Class Schedule</td>
+                                <td>Reset Class Schedule</td>
+                                <td>Enroll Class </td>
+                                <td>Unenroll Class </td>
+                                <td>View Class Schedule</td>
+                            </tr>
+                            <tr>
+                                <th>Actor</th>
+                                <td colspan="2">Admin</td>
+                                <td colspan="3">Users</td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td colspan="2">Describe processes of updating and resetting class schedule</td>
+                                 <td colspan="2">Describe processes of enrolling and unenrolling class</td>
+                                <td>Describe the process of viewing the schedule</td>
 
-
-
+                            </tr>
+                            <tr>
+                                <th>Successful Completion</th>
+                                <td>Open Course > Open target course > Select the session time and day > Press Update</td>
+                                <td>Open Course > Open target course > Select the target day > Press Reset </td>
+                                <td>Open Schedule > Click on Enrollment > Select or Input the course code > Press Enroll</td>
+                                <td>Open Schedule > Click on Enrollment > Press on unenroll (trashbin icon) next to the enrolled course</td>
+                                <td>Open Schedule</td>
+                            </tr>
+                            <tr>
+                                <th>Alternative</th>
+                                <td colspan="2">None</td>
+                                <td colspan="2">Open Profile > Open Classes</td>
+                                <td>None</td>
+                            </tr>
+                             <tr>
+                                <th>Precondition</th>
+                                <td colspan="2">The logged in user must be administrator account</td>
+                                 <td colspan="2">User must logged in</td>
+                                 <td>User must login and the admin must add a class schedule beforehand</td>
+                            </tr><tr>
+                                <th>Post condition</th>
+                                <td>The courses will be appear on class schedule</td>
+                                <td>The existing session or day of the class schedule will be remove</td>
+                                <td>Enroll, the course will appear under the current enrollment </td>
+                                <td>Unenroll, the course will be remove from current enrollment </td>
+                                <td>The user will be able to see the generate schedule</td>
+                            </tr>
+                        </table></div>
+                </div>
+            </div></div>
+    </div>
+    <div class="container py-2  bg-dark">
+    <div class="container-fluid p-5">
+        <div class="row flex-lg-row align-items-center text-white">
+            <h3 class="display-7 fw-bold text-center">Let us know if you have any comment</h3>
+        </div>
+    </div>
     </div>
 
 {% endblock %}

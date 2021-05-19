@@ -1,4 +1,4 @@
-from .models import Class, Account, Curriculum, Course
+from .models import Account, Curriculum, Course
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
